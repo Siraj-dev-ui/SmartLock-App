@@ -2,7 +2,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 ## 📱 Download APK
 
-[Download MyApp v1.0](android/app/build/outputs/apk/release/app-release.apk apk/app-release.apk)
+[Download MyApp v1.0](apk/app-release.apk)
 
 # Getting Started
 
