@@ -131,14 +131,14 @@ android {
 
     // generates one apk
 
-    splits {
-    abi {
-        enable true
-        reset()
-        include 'armeabi-v7a', 'arm64-v8a'
-        universalApk true   // this creates one big universal APK
-    }
-}
+//     splits {
+//     abi {
+//         enable true
+//         reset()
+//         include 'armeabi-v7a', 'arm64-v8a'
+//         universalApk true   // this creates one big universal APK
+//     }
+// }
 
 }
 
