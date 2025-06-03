@@ -6,6 +6,10 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 #### Older phones (Samsung S7, some budget phones) are armeabi-v7a → [Download This App (Smaller In Size)](apk/app-armeabi-v7a-release.apk)
 
+#### For All Mobiles [Download This App (Samller In Size-Univesal)](apk/app-universal-release.apk)
+
+app-universal-release
+
 #### For All Mobiles [Download This App (Bigger In Size)](apk/app-release.apk)
 
 # Getting Started
