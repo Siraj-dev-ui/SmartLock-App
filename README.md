@@ -2,7 +2,11 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 ## 📱 Download APK
 
-[Download MyApp v1.0](apk/app-release.apk)
+#### New phones (Samsung S10+, Pixel 3+, etc.) are arm64-v8a → [Download This App (Smaller In Size)](apk/app-arm64-v8a-release.apk)
+
+#### Older phones (Samsung S7, some budget phones) are armeabi-v7a → [Download This App (Smaller In Size)](apk/app-armeabi-v7a-release.apk)
+
+#### For All Mobiles [Download This App (Bigger In Size)](apk/app-release.apk)
 
 # Getting Started
 
