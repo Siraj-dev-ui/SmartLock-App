@@ -3,10 +3,16 @@ apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
 
-project.ext.react = [
-    entryFile: "index.js",
-    enableHermes: true
-]
+// project.ext.react = [
+//     entryFile: "index.js",
+//     enableHermes: true
+// ]
+
+// project.ext.vectoricons = [
+//     iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ] // Specify font files
+// ]
+
+
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -108,14 +114,14 @@ android {
             // see https://reactnative.dev/docs/signed-apk-android.
 
             // to decrease the app size
-            shrinkResources true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            // shrinkResources true
+            // minifyEnabled true
+            // proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
 
             // default configurations
             signingConfig signingConfigs.debug
-            // minifyEnabled enableProguardInReleaseBuilds
-            // proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
 
@@ -152,3 +158,5 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
