@@ -1,8 +1,14 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Text, View} from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const HomeScreen = () => {
-  return <Text>HomeScreen</Text>;
+  return (
+    <View>
+      <Text> Home screen</Text>
+      <Entypo name="home" size={30} color="#900" />
+    </View>
+  );
 };
 
 export default HomeScreen;
