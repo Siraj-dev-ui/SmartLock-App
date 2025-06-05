@@ -11,8 +11,10 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigation = () => {
   return (
     <Tab.Navigator
+      initialRouteName="Requests"
       screenOptions={{
         headerShown: false,
+
         tabBarActiveTintColor: 'blue',
         tabBarInactiveTintColor: 'gray',
       }}>
@@ -34,6 +36,7 @@ const BottomTabNavigation = () => {
         name="Requests"
         component={RequestsScreen}
         options={{
+          tabBarBadge: 6,
           tabBarIcon: ({focused, color, size}) => (
             <Entypo
               name="home"

@@ -17,6 +17,8 @@ export const Colors = {
   error: 'red',
   success: 'green',
   warning: 'yellow',
+  approve: 'green',
+  reject: 'red',
 };
 
 export const btnColors = {
