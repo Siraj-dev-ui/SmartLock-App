@@ -4,6 +4,15 @@ export const FontSize = {
   large: 20,
 };
 
+export const DefaultColors = {
+  red: 'red',
+  green: 'green',
+  blue: 'blue',
+  orange: 'orange',
+  yellow: 'yellow',
+  white: 'white',
+};
+
 export const Colors = {
   error: 'red',
   success: 'green',
