@@ -12,6 +12,12 @@ app-universal-release -->
 
 #### Download The App [Download MyApp v1.0](apk/app-release.apk)
 
+# Developer guide:
+
+## Check Logs
+
+npx react-native log-android
+
 # Getting Started
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.

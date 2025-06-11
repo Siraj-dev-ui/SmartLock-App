@@ -1,11 +1,99 @@
 import React, {useState} from 'react';
-import {Switch, Text, TouchableOpacity, View} from 'react-native';
+import {Switch, Text, TouchableOpacity, View, Alert} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {DefaultColors} from '../../Utils/Theme';
+import {BleManager, State} from 'react-native-ble-plx';
+import {PermissionsAndroid, Platform} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+
+import {Colors, DefaultColors} from '../../Utils/Theme';
+
+const manager = new BleManager();
 
 const HomeScreen = () => {
   const [doorStatus, setDoorStatus] = useState(false);
   const [autoUnlock, setAutoUnlock] = useState(false);
+  const [scanStatus, setScanStatus] = useState('IDLE');
+
+  async function requestBluetoothPermissions() {
+    console.log('checking for permission..');
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      ]);
+      console.log('granted permissions for the app : ', granted);
+
+      const allGranted = Object.values(granted).every(val => val === 'granted');
+      CheckDeviceLocationAndBluetooth();
+      return allGranted;
+    }
+    return true; // iOS handles permissions differently
+  }
+
+  const isBluetoothOn = async () => {
+    const state = await manager.state();
+
+    return state === State.PoweredOn;
+  };
+
+  const isLocationOn = async () => {
+    const enabled = await DeviceInfo.isLocationEnabled();
+    return enabled;
+  };
+
+  const CheckDeviceLocationAndBluetooth = async () => {
+    const bluetoothOn = await isBluetoothOn(); // ← call it with ()
+    const locationOn = await isLocationOn();
+
+    if (bluetoothOn) {
+      console.log('Bluetooth is ON');
+    } else {
+      console.log('Bluetooth is OFF');
+      return false;
+    }
+
+    if (locationOn) {
+      console.log('location on');
+    } else {
+      console.log('location off');
+      return false;
+    }
+
+    return true;
+  };
+
+  const ScanForBluetooth = async () => {
+    // setScanStatus('Scanning ...');
+
+    // console.log('Scanning Started...');
+    const granted = await requestBluetoothPermissions();
+    if (granted) {
+      const locationBluetooth = await CheckDeviceLocationAndBluetooth();
+      if (locationBluetooth) {
+        console.log('device scan start...');
+        manager.startDeviceScan(null, null, (error, device) => {
+          if (error) {
+            console.log('device Scan Error...', error);
+            return;
+          }
+
+          if (device && device.name === 'sirajesp') {
+            // setScanStatus(device.name);
+            console.log('device found : siraj esp');
+            console.log(device);
+            manager.stopDeviceScan();
+          } else {
+            console.log('no device found siraj esp');
+          }
+        });
+      } else {
+        console.log('enable location and bluetooth of the device...');
+      }
+    } else {
+      console.log('grant bluetooth and location permission to the app');
+    }
+  };
   return (
     <View
       style={{
@@ -59,6 +147,16 @@ const HomeScreen = () => {
         {' '}
         The LAB is {!doorStatus ? 'Closed' : 'Open'}.
       </Text>
+      <TouchableOpacity
+        style={{
+          backgroundColor: DefaultColors.orange,
+          padding: 10,
+        }}
+        onPress={() => ScanForBluetooth()} // or onPress={() => ScanForBluetooth()}
+      >
+        <Text>Scan Blutooth</Text>
+        <Text>{scanStatus}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
