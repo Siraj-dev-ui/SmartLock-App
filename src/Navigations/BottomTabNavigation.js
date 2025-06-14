@@ -6,6 +6,7 @@ import SettingsScreen from '../Screens/SettingsScreen';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RequestsScreen from '../Screens/RequestsScreen';
+import {DefaultColors} from '../Utils/Theme';
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigation = () => {
@@ -15,7 +16,8 @@ const BottomTabNavigation = () => {
       screenOptions={{
         headerShown: false,
 
-        tabBarActiveTintColor: 'blue',
+        tabBarActiveTintColor: DefaultColors.blue,
+        // tabBarInactiveTintColor: DefaultColors.gray,
         tabBarInactiveTintColor: 'gray',
       }}>
       <Tab.Screen

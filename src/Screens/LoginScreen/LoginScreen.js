@@ -38,7 +38,7 @@ const LoginScreen = () => {
       />
 
       <CustomInput placeholder="Email" />
-      <CustomInput placeholder="Password" />
+      <CustomInput placeholder="Password" secureTextEntry={true} />
       <CustomButton text={'Login'} onPress={onPressLogin} />
       <CustomButton text={'Register'} onPress={onPressRegister} />
     </View>

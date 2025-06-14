@@ -7,10 +7,11 @@ export const FontSize = {
 export const DefaultColors = {
   red: 'red',
   green: 'green',
-  blue: 'blue',
+  blue: '#4d70fa',
   orange: 'orange',
   yellow: 'yellow',
   white: 'white',
+  gray: '#BAC7BE',
   temp: '#fff',
 };
 
@@ -23,8 +24,8 @@ export const Colors = {
 };
 
 export const btnColors = {
-  primary: 'blue',
-  secondary: 'green',
-  danger: 'red',
+  primary: '#DFA06E',
+  secondary: '#F5F3BB',
+  danger: '#DF2935',
   warning: 'yellow',
 };
