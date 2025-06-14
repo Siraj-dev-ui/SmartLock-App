@@ -3,11 +3,11 @@ import {View, TouchableOpacity} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import {Colors, DefaultColors} from '../../Utils/Theme';
 
-const RequestComponent = () => {
+const RequestComponent = ({item}) => {
   return (
     <Card style={{margin: 15, padding: 10, position: 'relative'}}>
-      <Text>Siraj</Text>
-      <Text>Requested Role User/Supervisor</Text>
+      <Text>{item.name}</Text>
+      <Text>Requested Role {item.RequestedRole}</Text>
       <View
         style={{
           flexDirection: 'row',

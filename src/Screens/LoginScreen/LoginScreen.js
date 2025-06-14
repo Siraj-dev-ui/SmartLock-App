@@ -41,6 +41,10 @@ const LoginScreen = () => {
       <CustomInput placeholder="Password" secureTextEntry={true} />
       <CustomButton text={'Login'} onPress={onPressLogin} />
       <CustomButton text={'Register'} onPress={onPressRegister} />
+
+      {/* <Text style={{fontWeight: 'bold', color: 'red'}}>
+        Request Is Pending For Approval Against This Email.
+      </Text> */}
     </View>
   );
 };

@@ -1,10 +1,20 @@
 import React from 'react';
-import {View, Switch, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  Switch,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import {Colors, DefaultColors, FontSize} from '../../Utils/Theme';
 import RequestComponent from '../../Components/RequestComponent';
 
 const RequestsScreen = () => {
+  const data = [
+    {id: 1, name: 'Siraj', RequestedRole: 'User'},
+    {id: 2, name: 'Ali', RequestedRole: 'Supervisor'},
+  ];
   return (
     <>
       <Text
@@ -17,14 +27,20 @@ const RequestsScreen = () => {
         }}>
         Sign Up Requests
       </Text>
-      <ScrollView>
-        <RequestComponent />
-        <RequestComponent />
-        <RequestComponent />
-        <RequestComponent />
-        <RequestComponent />
-        <RequestComponent />
-      </ScrollView>
+      <FlatList
+        data={data}
+        renderItem={({item}) => <RequestComponent item={item} />}
+        keyExtractor={item => item.id.toString()}
+      />
+      {/* <ScrollView>
+        // <RequestComponent />
+        // <RequestComponent />
+        // <RequestComponent />
+        // <RequestComponent />
+        // <RequestComponent />
+        // <RequestComponent />
+        //{' '}
+      </ScrollView> */}
     </>
   );
 };
