@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Button} from '@react-navigation/elements';
@@ -16,7 +17,7 @@ const LoginScreen = () => {
 
   const onPressLogin = () => {
     console.log('we are in');
-    navigation.navigate('LoginScreen');
+    navigation.navigate('BottomTabNavigation');
   };
 
   const onPressRegister = () => {
@@ -30,7 +31,11 @@ const LoginScreen = () => {
         justifyContent: 'center',
         margin: 20,
       }}>
-      <Text> Smart Lock</Text>
+      <Image
+        source={require('../../../assets/Images/Lock.png')}
+        resizeMode="contain"
+        style={{width: 100, height: 100, marginBottom: 50}}
+      />
 
       <CustomInput placeholder="Email" />
       <CustomInput placeholder="Password" />

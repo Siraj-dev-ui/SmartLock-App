@@ -11,6 +11,7 @@ export const DefaultColors = {
   orange: 'orange',
   yellow: 'yellow',
   white: 'white',
+  temp: '#fff',
 };
 
 export const Colors = {

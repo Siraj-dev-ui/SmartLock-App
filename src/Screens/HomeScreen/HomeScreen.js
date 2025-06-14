@@ -50,6 +50,7 @@ const HomeScreen = () => {
       console.log('Bluetooth is ON');
     } else {
       console.log('Bluetooth is OFF');
+      Alert.alert('Enable Bluetooth to Proceed...');
       return false;
     }
 
@@ -57,6 +58,7 @@ const HomeScreen = () => {
       console.log('location on');
     } else {
       console.log('location off');
+      Alert.alert('Enable Location to Proceed...');
       return false;
     }
 
@@ -93,6 +95,7 @@ const HomeScreen = () => {
     } else {
       console.log('grant bluetooth and location permission to the app');
     }
+    console.log('Finished Scanning...');
   };
   return (
     <View

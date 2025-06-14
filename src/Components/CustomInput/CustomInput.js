@@ -7,7 +7,7 @@ const CustomInput = ({
   value,
   setValue,
   placeholder = 'default',
-  secureTextEntry,
+  secureTextEntry = false,
 }) => {
   const [password, setPassword] = useState('');
 
@@ -37,6 +37,7 @@ const CustomInput = ({
         borderWidth: 0.1,
       }}
       placeholder={placeholder}
+      secureTextEntry={secureTextEntry}
     />
   );
 };
