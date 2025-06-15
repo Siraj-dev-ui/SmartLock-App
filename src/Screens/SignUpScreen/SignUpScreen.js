@@ -66,6 +66,9 @@ const SignUpScreen = () => {
       </View>
 
       <CustomButton text={'Register'} />
+      <Text style={{fontWeight: 'bold', color: 'red'}}>
+        Request Is Pending For Approval Against This Email.
+      </Text>
     </View>
   );
 };
