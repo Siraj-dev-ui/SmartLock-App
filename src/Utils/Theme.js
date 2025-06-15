@@ -7,9 +7,11 @@ export const FontSize = {
 export const DefaultColors = {
   red: 'red',
   green: 'green',
+  lightGreen: '#ADEBB3',
   blue: '#4d70fa',
   orange: 'orange',
   yellow: 'yellow',
+  lightYellow: '#FFFFC5',
   white: 'white',
   gray: '#BAC7BE',
   temp: '#fff',
