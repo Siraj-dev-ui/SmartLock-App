@@ -37,11 +37,11 @@ const BottomTabNavigation = () => {
         }}
       />
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Requests"
         component={RequestsScreen}
         options={{
-          tabBarBadge: 6,
+          tabBarBadge: 8,
           tabBarIcon: ({focused, color, size}) => (
             <FontAwesome5
               name="hands-helping"
@@ -50,7 +50,7 @@ const BottomTabNavigation = () => {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
