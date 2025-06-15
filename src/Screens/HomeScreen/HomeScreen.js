@@ -24,7 +24,7 @@ const HomeScreen = () => {
   const [labStatus, setLabStatus] = useState(true);
   const [deviceFound, setDeviceFound] = useState(true);
 
-  // const [lockStatus, setLockStatus] = useState(true);
+  const [lockStatus, setLockStatus] = useState(true);
   const [scanStatus, setScanStatus] = useState('IDLE');
 
   async function requestBluetoothPermissions() {
@@ -112,7 +112,7 @@ const HomeScreen = () => {
   };
   return (
     <View style={{flex: 1}}>
-      <Text
+      {/* <Text
         style={{
           margin: 10,
           fontWeight: 'bold',
@@ -120,9 +120,93 @@ const HomeScreen = () => {
           alignSelf: 'center',
           color: DefaultColors.green,
         }}>
-        The LAB is {doorStatus ? 'Closed.' : 'Open.'}.
+        {/* The LAB is {doorStatus ? 'Closed.' : 'Open.'}. */}
+      {/* The LAB is Open */}
+      {/* </Text> */}
+      <Text
+        style={{
+          margin: 10,
+          fontWeight: 'bold',
+          fontSize: 20,
+          alignSelf: 'center',
+          color: DefaultColors.red,
+        }}>
+        {/* The LAB is {doorStatus ? 'Closed.' : 'Open.'}. */}
+        The LAB is Closed
       </Text>
+      <View
+        style={{
+          // backgroundColor: 'blue',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: '90%',
+          // height: '100%',
+          alignSelf: 'center',
+          padding: 5,
+          margin: 5,
+        }}>
+        <Card
+          style={{
+            width: '45%',
+            margin: 5,
+            // backgroundColor: 'red',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 10,
+          }}>
+          {/* <Image
+            source={require('../../../assets/Images/door-open.png')}
+            style={{width: 60, height: 60, alignSelf: 'center'}}
+            resizeMode="contain"
+          /> */}
+          {/* <Image
+            source={require('../../../assets/Images/door-open.png')}
+            style={{width: 60, height: 60, alignSelf: 'center'}}
+            resizeMode="contain"
+          /> */}
+          <Image
+            source={require('../../../assets/Images/door-close.png')}
+            style={{width: 60, height: 60, alignSelf: 'center'}}
+            resizeMode="contain"
+          />
+          <Text style={{alignSelf: 'center'}}>Door Status</Text>
+          <Text
+            style={{
+              alignSelf: 'center',
+              color: DefaultColors.red,
+              fontWeight: 'bold',
+            }}>
+            Closed
+          </Text>
+        </Card>
+        <View style={{width: '45%', margin: 5}}>
+          <Card style={{padding: 5, margin: 5}}>
+            <Image
+              source={require('../../../assets/Images/supervisor.png')}
+              style={{width: 30, height: 30, alignSelf: 'center'}}
+              resizeMode="contain"
+            />
+            <Text style={{alignSelf: 'center'}}>0</Text>
+            <Text style={{alignSelf: 'center'}}>Supervisors In Lab</Text>
+          </Card>
 
+          {/* repon or closed in */}
+          <Card style={{padding: 5, margin: 5}}>
+            <Image
+              source={require('../../../assets/Images/padlock.png')}
+              style={{width: 30, height: 30, alignSelf: 'center'}}
+              resizeMode="contain"
+            />
+            <Text style={{alignSelf: 'center'}}>Closing In</Text>
+            <Text style={{alignSelf: 'center'}}>2 h 30 m</Text>
+          </Card>
+          {/* <Card>
+            <Text>icon</Text>
+            <Text>Re-Open</Text>
+            <Text>5pm Tomorrow</Text>
+          </Card> */}
+        </View>
+      </View>
       <View
         style={{
           flex: 1,
@@ -143,9 +227,9 @@ const HomeScreen = () => {
             Lab Status
           </Text>
           <Image
-            source={require('../../../assets/Images/users.png')}
+            source={require('../../../assets/Images/no_users.png')}
             resizeMode="contain"
-            style={{width: 100, height: 100, alignSelf: 'center'}}
+            style={{width: 80, height: 80, alignSelf: 'center'}}
           />
           {/* <Image
             source={require('../../../assets/Images/no_users.png')}
@@ -154,8 +238,8 @@ const HomeScreen = () => {
           /> */}
 
           <Text style={{alignSelf: 'center', margin: 10, fontSize: 30}}>
-            Occupied
-            {/* Not Occupied */}
+            {/* Occupied */}
+            Vacant
           </Text>
         </Card>
 
@@ -187,46 +271,69 @@ const HomeScreen = () => {
                 <Image
                   source={require('../../../assets/Images/Unlock.png')}
                   resizeMode="contain"
-                  style={{width: 200, height: 200}}
+                  style={{width: 170, height: 170}}
                 />
               ) : (
                 <Image
                   source={require('../../../assets/Images/Locked.png')}
                   resizeMode="contain"
-                  style={{width: 200, height: 200}}
+                  style={{width: 170, height: 170}}
                 />
               )}
+
+              <View
+                style={{
+                  // flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 5,
+                }}>
+                <Image
+                  source={require('../../../assets/Images/press.png')}
+                  resizeMode="contain"
+                  style={{
+                    width: 30,
+                    height: 30,
+                  }}
+                />
+                <Text>Pressable</Text>
+              </View>
             </TouchableOpacity>
           ) : (
             <Image
               source={require('../../../assets/Images/bluetooth.png')}
               resizeMode="contain"
-              style={{width: 200, height: 200}}
+              style={{width: 170, height: 170}}
             />
           )}
 
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              width: '100%',
-            }}>
-            <Text>Auto Unlock {autoUnlock ? 'ON' : 'OFF'}</Text>
-            <Switch
-              trackColor={{false: '#767577', true: '#81b0ff'}}
-              thumbColor={autoUnlock ? DefaultColors.blue : '#f4f3f4'}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={() => setAutoUnlock(!autoUnlock)}
-              value={autoUnlock}
-            />
-          </View>
+          <Card style={{marginTop: 5}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 5,
+                paddingHorizontal: 10,
+                width: '95%',
+                marginTop: 5,
+              }}>
+              <Text>Auto Unlock {autoUnlock ? 'ON' : 'OFF'}</Text>
+              <Switch
+                trackColor={{false: '#767577', true: '#81b0ff'}}
+                thumbColor={autoUnlock ? DefaultColors.blue : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={() => setAutoUnlock(!autoUnlock)}
+                value={autoUnlock}
+              />
+            </View>
+          </Card>
 
           {autoUnlock && (
             <Card
               style={{
                 justifyContent: 'space-between',
                 flexDirection: 'row',
-                width: '90%',
+                // width: '100%',
                 padding: 10,
                 margin: 10,
                 backgroundColor: deviceFound
@@ -246,7 +353,17 @@ const HomeScreen = () => {
                   <Text style={{fontSize: 15}}>Elab</Text>
                 </View>
               ) : (
-                <Text>Scanning...</Text>
+                <View
+                  style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    // backgroundColor: 'blue',
+                    paddingHorizontal: 10,
+                  }}>
+                  <Text style={{fontSize: 15}}>Scanning For Device...</Text>
+                  <Text style={{fontSize: 15}}></Text>
+                </View>
               )}
             </Card>
           )}
