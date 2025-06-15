@@ -46,7 +46,7 @@ const RequestsScreen = () => {
       id: 6,
       name: 'Emily Watson',
       email: 'emily.watson@gmail.com',
-      RequestedRole: 'Supervisor',
+      RequestedRole: 'User',
     },
     {
       id: 7,
