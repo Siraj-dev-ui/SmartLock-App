@@ -6,8 +6,31 @@ import {Colors, DefaultColors} from '../../Utils/Theme';
 const RequestComponent = ({item}) => {
   return (
     <Card style={{margin: 15, padding: 10, position: 'relative'}}>
-      <Text>{item.name}</Text>
-      <Text>Requested Role {item.RequestedRole}</Text>
+      <View style={{flexDirection: 'row'}}>
+        <Text style={{width: '45%', fontWeight: 'bold', paddingVertical: 5}}>
+          Name
+        </Text>
+        <Text>{item.name}</Text>
+      </View>
+
+      <View style={{flexDirection: 'row'}}>
+        <Text style={{width: '45%', fontWeight: 'bold', paddingVertical: 5}}>
+          Email{' '}
+        </Text>
+        <Text>{item.email}</Text>
+      </View>
+      <View style={{flexDirection: 'row'}}>
+        <Text style={{width: '45%', fontWeight: 'bold', paddingVertical: 5}}>
+          Requested Role{' '}
+        </Text>
+        <Text
+          style={
+            item.RequestedRole == 'Supervisor' && {color: DefaultColors.orange}
+          }>
+          {item.RequestedRole}
+        </Text>
+      </View>
+
       <View
         style={{
           flexDirection: 'row',
@@ -18,7 +41,8 @@ const RequestComponent = ({item}) => {
         <TouchableOpacity
           style={{
             borderWidth: 0.5,
-            width: '100',
+            // width: '100',
+            width: '45%',
             paddingVertical: 15,
             borderRadius: 10,
             backgroundColor: Colors.reject,
@@ -36,7 +60,8 @@ const RequestComponent = ({item}) => {
         <TouchableOpacity
           style={{
             borderWidth: 0.5,
-            width: '100',
+            // width: '100',
+            width: '45%',
             paddingVertical: 15,
             borderRadius: 10,
             backgroundColor: Colors.approve,
