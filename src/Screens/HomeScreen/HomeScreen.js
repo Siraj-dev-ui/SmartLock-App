@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {BleManager, State} from 'react-native-ble-plx';
@@ -110,6 +111,11 @@ const HomeScreen = () => {
     }
     console.log('Finished Scanning...');
   };
+
+  const UnLockRequest = () => {
+    setDoorStatus(!doorStatus);
+    Alert.alert('The Lab Is Closed.\nTry Again During Opening Hours.');
+  };
   return (
     <View style={{flex: 1}}>
       {/* <Text
@@ -191,7 +197,7 @@ const HomeScreen = () => {
           </Card>
 
           {/* repon or closed in */}
-          <Card style={{padding: 5, margin: 5}}>
+          {/* <Card style={{padding: 5, margin: 5}}>
             <Image
               source={require('../../../assets/Images/padlock.png')}
               style={{width: 30, height: 30, alignSelf: 'center'}}
@@ -199,12 +205,16 @@ const HomeScreen = () => {
             />
             <Text style={{alignSelf: 'center'}}>Closing In</Text>
             <Text style={{alignSelf: 'center'}}>2 h 30 m</Text>
-          </Card>
-          {/* <Card>
-            <Text>icon</Text>
-            <Text>Re-Open</Text>
-            <Text>5pm Tomorrow</Text>
           </Card> */}
+          <Card style={{padding: 5, margin: 5}}>
+            <Image
+              source={require('../../../assets/Images/reopen.png')}
+              style={{width: 30, height: 30, alignSelf: 'center'}}
+              resizeMode="contain"
+            />
+            <Text style={{alignSelf: 'center'}}>Re-Open</Text>
+            <Text style={{alignSelf: 'center'}}>10 am</Text>
+          </Card>
         </View>
       </View>
       <View
@@ -258,7 +268,8 @@ const HomeScreen = () => {
               style={{
                 borderRadius: 75,
               }}
-              onPress={() => setDoorStatus(!doorStatus)}>
+              // onPress={() => setDoorStatus(!doorStatus)}>
+              onPress={() => UnLockRequest()}>
               {/* <Text
               style={{
                 color: DefaultColors.white,
@@ -280,7 +291,6 @@ const HomeScreen = () => {
                   style={{width: 170, height: 170}}
                 />
               )}
-
               <View
                 style={{
                   // flexDirection: 'row',
