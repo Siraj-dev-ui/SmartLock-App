@@ -1,17 +1,30 @@
 import React, {useState} from 'react';
-import {Switch, Text, TouchableOpacity, View, Alert} from 'react-native';
+import {
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {BleManager, State} from 'react-native-ble-plx';
 import {PermissionsAndroid, Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 import {Colors, DefaultColors} from '../../Utils/Theme';
+import {Card} from 'react-native-paper';
 
 const manager = new BleManager();
 
 const HomeScreen = () => {
   const [doorStatus, setDoorStatus] = useState(false);
   const [autoUnlock, setAutoUnlock] = useState(false);
+  const [labStatus, setLabStatus] = useState(true);
+  const [deviceFound, setDeviceFound] = useState(true);
+
+  // const [lockStatus, setLockStatus] = useState(true);
   const [scanStatus, setScanStatus] = useState('IDLE');
 
   async function requestBluetoothPermissions() {
@@ -98,59 +111,147 @@ const HomeScreen = () => {
     console.log('Finished Scanning...');
   };
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        // margin: 20,
-        borderWidth: 6,
-        flex: 1,
-        borderColor: DefaultColors.red,
-      }}>
+    <View style={{flex: 1}}>
+      <Text
+        style={{
+          margin: 10,
+          fontWeight: 'bold',
+          fontSize: 20,
+          alignSelf: 'center',
+          color: DefaultColors.green,
+        }}>
+        The LAB is {doorStatus ? 'Closed.' : 'Open.'}.
+      </Text>
+
       <View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          width: '100%',
+          flex: 1,
+          // borderWidth: 6,
+          // borderColor: labStatus ? DefaultColors.green : DefaultColors.red,
         }}>
-        <Text>Auto Unlock {autoUnlock ? 'ON' : 'OFF'}</Text>
-        <Switch
-          trackColor={{false: '#767577', true: '#81b0ff'}}
-          thumbColor={autoUnlock ? DefaultColors.blue : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={() => setAutoUnlock(!autoUnlock)}
-          value={autoUnlock}
-        />
-      </View>
-
-      {!autoUnlock && (
-        <TouchableOpacity
+        <Card
           style={{
-            width: 150,
-            height: 150,
-            borderRadius: 75,
-            backgroundColor: doorStatus
-              ? DefaultColors.green
-              : DefaultColors.red,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          onPress={() => setDoorStatus(!doorStatus)}>
-          <Text
-            style={{
-              color: DefaultColors.white,
-              fontSize: 30,
-              alignSelf: 'center',
-            }}>
-            {doorStatus ? 'Lock' : 'Unlock'}
+            width: '90%',
+            alignSelf: 'center',
+            margin: 10,
+            // padding: 20,
+            // height: 200,
+            // justifyContent: 'center',
+            // alignItems: 'center',
+          }}>
+          <Text style={{margin: 10, alignSelf: 'center', fontSize: 20}}>
+            Lab Status
           </Text>
-        </TouchableOpacity>
-      )}
-      <Text style={{margin: 10, fontWeight: 'bold'}}>
-        {' '}
-        The LAB is {!doorStatus ? 'Closed' : 'Open'}.
-      </Text>
-      <TouchableOpacity
+          <Image
+            source={require('../../../assets/Images/users.png')}
+            resizeMode="contain"
+            style={{width: 100, height: 100, alignSelf: 'center'}}
+          />
+          {/* <Image
+            source={require('../../../assets/Images/no_users.png')}
+            resizeMode="contain"
+            style={{width: 100, height: 100, alignSelf: 'center'}}
+          /> */}
+
+          <Text style={{alignSelf: 'center', margin: 10, fontSize: 30}}>
+            Occupied
+            {/* Not Occupied */}
+          </Text>
+        </Card>
+
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            // justifyContent: 'center',
+            // margin: 20,
+            // borderWidth: 6,
+            flex: 1,
+            // borderColor: labStatus ? DefaultColors.green : DefaultColors.red,
+          }}>
+          {!autoUnlock ? (
+            <TouchableOpacity
+              style={{
+                borderRadius: 75,
+              }}
+              onPress={() => setDoorStatus(!doorStatus)}>
+              {/* <Text
+              style={{
+                color: DefaultColors.white,
+                fontSize: 30,
+                alignSelf: 'center',
+              }}>
+              {doorStatus ? 'Lock' : 'Unlock'}
+            </Text> */}
+              {doorStatus ? (
+                <Image
+                  source={require('../../../assets/Images/Unlock.png')}
+                  resizeMode="contain"
+                  style={{width: 200, height: 200}}
+                />
+              ) : (
+                <Image
+                  source={require('../../../assets/Images/Locked.png')}
+                  resizeMode="contain"
+                  style={{width: 200, height: 200}}
+                />
+              )}
+            </TouchableOpacity>
+          ) : (
+            <Image
+              source={require('../../../assets/Images/bluetooth.png')}
+              resizeMode="contain"
+              style={{width: 200, height: 200}}
+            />
+          )}
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: '100%',
+            }}>
+            <Text>Auto Unlock {autoUnlock ? 'ON' : 'OFF'}</Text>
+            <Switch
+              trackColor={{false: '#767577', true: '#81b0ff'}}
+              thumbColor={autoUnlock ? DefaultColors.blue : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setAutoUnlock(!autoUnlock)}
+              value={autoUnlock}
+            />
+          </View>
+
+          {autoUnlock && (
+            <Card
+              style={{
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                width: '90%',
+                padding: 10,
+                margin: 10,
+                backgroundColor: deviceFound
+                  ? DefaultColors.lightGreen
+                  : DefaultColors.lightYellow,
+              }}>
+              {deviceFound ? (
+                <View
+                  style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    // backgroundColor: 'blue',
+                    paddingHorizontal: 10,
+                  }}>
+                  <Text style={{fontSize: 15}}>Connected Device</Text>
+                  <Text style={{fontSize: 15}}>Elab</Text>
+                </View>
+              ) : (
+                <Text>Scanning...</Text>
+              )}
+            </Card>
+          )}
+
+          {/* <TouchableOpacity
         style={{
           backgroundColor: DefaultColors.orange,
           padding: 10,
@@ -159,7 +260,9 @@ const HomeScreen = () => {
       >
         <Text>Scan Blutooth</Text>
         <Text>{scanStatus}</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+        </View>
+      </View>
     </View>
   );
 };
