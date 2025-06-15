@@ -23,6 +23,7 @@ const SignUpScreen = () => {
         resizeMode="contain"
         style={{width: 100, height: 100, marginBottom: 50}}
       />
+      <CustomInput placeholder="Name" />
       <CustomInput placeholder="Email" />
       <CustomInput placeholder="Password" secureTextEntry={true} />
       <CustomInput placeholder="Confirm Password" secureTextEntry={true} />
