@@ -14,6 +14,12 @@ const RequestsScreen = () => {
   const data = [
     {id: 1, name: 'Siraj', RequestedRole: 'User'},
     {id: 2, name: 'Ali', RequestedRole: 'Supervisor'},
+    {id: 3, name: 'Siraj', RequestedRole: 'User'},
+    {id: 4, name: 'Ali', RequestedRole: 'Supervisor'},
+    {id: 5, name: 'Siraj', RequestedRole: 'User'},
+    {id: 6, name: 'Ali', RequestedRole: 'Supervisor'},
+    {id: 7, name: 'Siraj', RequestedRole: 'User'},
+    {id: 8, name: 'Ali', RequestedRole: 'Supervisor'},
   ];
   return (
     <>
@@ -32,15 +38,6 @@ const RequestsScreen = () => {
         renderItem={({item}) => <RequestComponent item={item} />}
         keyExtractor={item => item.id.toString()}
       />
-      {/* <ScrollView>
-        // <RequestComponent />
-        // <RequestComponent />
-        // <RequestComponent />
-        // <RequestComponent />
-        // <RequestComponent />
-        // <RequestComponent />
-        //{' '}
-      </ScrollView> */}
     </>
   );
 };
