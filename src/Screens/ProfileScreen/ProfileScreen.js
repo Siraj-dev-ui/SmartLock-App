@@ -23,14 +23,14 @@ const ProfileScreen = () => {
         />
 
         <View>
-          <Text style={{padding: 2, fontSize: 15}}>John Smith</Text>
-          <Text style={{padding: 2, fontSize: 15}}>john.smith@gmail.com</Text>
-          <Text style={{padding: 2, fontSize: 15}}>Supervisor</Text>
+          <Text style={{padding: 2, fontSize: 15}}>Emily Watson</Text>
+          <Text style={{padding: 2, fontSize: 15}}>emily.watson@gmail.com</Text>
+          <Text style={{padding: 2, fontSize: 15}}>User</Text>
         </View>
       </View>
 
       <View>
-        <Card style={{margin: 10, padding: 5}}>
+        {/* <Card style={{margin: 10, padding: 5}}>
           <View>
             <View
               style={{
@@ -66,8 +66,8 @@ const ProfileScreen = () => {
               <Text> from </Text>
               <Text> to </Text>
             </View> */}
-          </View>
-        </Card>
+        {/* </View> */}
+        {/* </Card> */}
 
         <Card style={{marginHorizontal: 10, marginVertical: 5, padding: 5}}>
           <View>
