@@ -30,7 +30,7 @@ const ProfileScreen = () => {
       </View>
 
       <View>
-        {/* <Card style={{margin: 10, padding: 5}}>
+        <Card style={{margin: 10, padding: 5}}>
           <View>
             <View
               style={{
@@ -48,7 +48,7 @@ const ProfileScreen = () => {
                   source={require('../../../assets/Images/configurations.png')}
                   style={{width: 30, height: 30, marginHorizontal: 10}}
                 />
-                <Text style={{fontSize: 15}}>Configurations</Text>
+                <Text style={{fontSize: 15}}>Lab Timings</Text>
               </View>
 
               <View style={{alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
@@ -61,13 +61,13 @@ const ProfileScreen = () => {
               </View>
             </View>
 
-            {/* <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row'}}>
               <Text> Monday </Text>
               <Text> from </Text>
               <Text> to </Text>
-            </View> */}
-        {/* </View> */}
-        {/* </Card> */}
+            </View>
+          </View>
+        </Card>
 
         <Card style={{marginHorizontal: 10, marginVertical: 5, padding: 5}}>
           <View>
