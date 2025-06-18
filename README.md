@@ -1,6 +1,6 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-<!-- ## 📱 Download APK -->
+## 📱 Download APK
 
 <!-- #### New phones (Samsung S10+, Pixel 3+, etc.) are arm64-v8a → [Download This App (Smaller In Size)](apk/app-arm64-v8a-release.apk)
 
@@ -10,7 +10,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 app-universal-release -->
 
-<!-- #### Download The App [Download MyApp v1.0](apk/app-release.apk) -->
+#### Download The App [Download MyApp v1.0](apk/app-release.apk)
 
 # Developer guide:
 
