@@ -6,11 +6,15 @@ import {Card} from 'react-native-paper';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useUser} from '../../Contexts/UserProvider';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const {setUser} = useUser();
+
   const onPressLogout = async () => {
     await AsyncStorage.removeItem('user');
+    setUser(null);
     navigation.reset({
       index: 0,
       routes: [{name: 'LoginScreen'}],

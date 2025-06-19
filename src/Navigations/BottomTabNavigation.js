@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../Screens/HomeScreen';
@@ -10,9 +10,15 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import RequestsScreen from '../Screens/RequestsScreen';
 import {DefaultColors} from '../Utils/Theme';
 import ProfileScreen from '../Screens/ProfileScreen';
+import {Roles} from '../Utils/Constants';
+import {useUser} from '../Contexts/UserProvider';
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigation = () => {
+  const {user} = useUser();
+
+  console.log('user user : ', user);
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -37,20 +43,23 @@ const BottomTabNavigation = () => {
         }}
       />
 
-      {/* <Tab.Screen
-        name="Requests"
-        component={RequestsScreen}
-        options={{
-          tabBarBadge: 8,
-          tabBarIcon: ({focused, color, size}) => (
-            <FontAwesome5
-              name="hands-helping"
-              size={focused ? 25 : 20}
-              color={focused ? 'blue' : ''}
-            />
-          ),
-        }}
-      /> */}
+      {user?.requested_role === Roles.ADMIN && (
+        <Tab.Screen
+          name="Requests"
+          component={RequestsScreen}
+          options={{
+            tabBarBadge: 8,
+            tabBarIcon: ({focused, color, size}) => (
+              <FontAwesome5
+                name="hands-helping"
+                size={focused ? 25 : 20}
+                color={focused ? 'blue' : ''}
+              />
+            ),
+          }}
+        />
+      )}
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}

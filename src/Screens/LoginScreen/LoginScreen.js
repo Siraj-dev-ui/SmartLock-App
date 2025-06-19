@@ -32,7 +32,7 @@ const LoginScreen = () => {
       const user = await AsyncStorage.getItem('user');
 
       if (user !== null) {
-        setUser(user);
+        setUser(JSON.parse(user));
 
         navigation.reset({index: 0, routes: [{name: 'BottomTabNavigation'}]});
       } else {
@@ -44,7 +44,7 @@ const LoginScreen = () => {
 
   const onPressLogin = async () => {
     const data = {
-      email: email.trim().toLowerCase(),
+      email: email.trim(),
       password: password.trim(),
     };
 
@@ -68,6 +68,7 @@ const LoginScreen = () => {
       // setMessage(null);
       // navigation.navigate('BottomTabNavigation');
       await AsyncStorage.setItem('user', JSON.stringify(resp.data));
+      setUser(resp.data);
       navigation.reset({
         index: 0,
         routes: [{name: 'BottomTabNavigation'}],
