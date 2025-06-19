@@ -36,8 +36,10 @@ const CustomInput = ({
         borderRadius: 4,
         borderWidth: 0.1,
       }}
+      value={value}
       placeholder={placeholder}
       secureTextEntry={secureTextEntry}
+      onChangeText={setValue}
     />
   );
 };

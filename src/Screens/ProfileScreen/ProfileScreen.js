@@ -1,11 +1,21 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, Touchable, TouchableOpacity, View} from 'react-native';
 import {DefaultColors} from '../../Utils/Theme';
 import {Card} from 'react-native-paper';
 
 import Entypo from 'react-native-vector-icons/Entypo';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+  const onPressLogout = async () => {
+    await AsyncStorage.removeItem('user');
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'LoginScreen'}],
+    });
+  };
   return (
     <View>
       <View
@@ -70,33 +80,35 @@ const ProfileScreen = () => {
         </Card>
 
         <Card style={{marginHorizontal: 10, marginVertical: 5, padding: 5}}>
-          <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingVertical: 10,
-              }}>
+          <TouchableOpacity onPress={onPressLogout}>
+            <View>
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingVertical: 10,
                 }}>
-                <Image
-                  source={require('../../../assets/Images/logout.png')}
-                  style={{width: 30, height: 30, marginHorizontal: 10}}
-                />
-                <Text style={{fontSize: 15}}>Logout</Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Image
+                    source={require('../../../assets/Images/logout.png')}
+                    style={{width: 30, height: 30, marginHorizontal: 10}}
+                  />
+                  <Text style={{fontSize: 15}}>Logout</Text>
+                </View>
               </View>
-            </View>
 
-            {/* <View style={{flexDirection: 'row'}}>
+              {/* <View style={{flexDirection: 'row'}}>
               <Text> Monday </Text>
               <Text> from </Text>
               <Text> to </Text>
-            </View> */}
-          </View>
+              </View> */}
+            </View>
+          </TouchableOpacity>
         </Card>
       </View>
     </View>
