@@ -26,6 +26,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     console.log(`[API Response] ${response.status} ${response.config.url}`);
+    console.log('Response Data: ', response.data);
     return response;
   },
   error => {
