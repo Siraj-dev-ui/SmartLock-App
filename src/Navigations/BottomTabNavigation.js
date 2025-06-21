@@ -17,7 +17,7 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigation = () => {
   const {user} = useUser();
 
-  console.log('user user : ', user);
+  // console.log('user user : ', user);
 
   return (
     <Tab.Navigator

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Switch,
   Text,
@@ -16,10 +16,17 @@ import DeviceInfo from 'react-native-device-info';
 
 import {Colors, DefaultColors} from '../../Utils/Theme';
 import {Card} from 'react-native-paper';
+import {axios} from '../../Utils/Axios';
+import {Door, RoomStatus} from '../../Utils/Constants';
+import {useToast} from 'react-native-toast-notifications';
+import moment from 'moment';
 
 const manager = new BleManager();
 
 const HomeScreen = () => {
+  const [door, setDoor] = useState(null);
+  const toast = useToast();
+
   const [doorStatus, setDoorStatus] = useState(false);
   const [autoUnlock, setAutoUnlock] = useState(false);
   const [labStatus, setLabStatus] = useState(true);
@@ -27,6 +34,108 @@ const HomeScreen = () => {
 
   const [lockStatus, setLockStatus] = useState(true);
   const [scanStatus, setScanStatus] = useState('IDLE');
+
+  const days = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+
+  function isLabOpen(schedule) {
+    const now = new Date();
+
+    // Step 1: Get current day
+
+    const today = days[now.getDay()];
+
+    const todaySchedule = schedule[today];
+
+    // Step 2: Check if door is set to open today
+    if (!todaySchedule || !todaySchedule.is_open) {
+      return false;
+    }
+
+    // Step 3: Get current time in HH:mm
+    const currentTime = moment(now).format('HH:mm');
+
+    // Step 4: Compare with opening and closing time
+    return (
+      currentTime >= todaySchedule.opening_time &&
+      currentTime <= todaySchedule.closing_time
+    );
+  }
+
+  function getNextOpenDay(schedule, currentDayIndex) {
+    // days array to loop through, Sunday=0 ... Saturday=6
+    const days = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+
+    // Start checking the day after currentDayIndex
+    for (let i = 1; i <= 7; i++) {
+      const nextDayIndex = (currentDayIndex + i) % 7;
+      const dayName = days[nextDayIndex];
+      const daySchedule = schedule[dayName];
+
+      if (daySchedule && daySchedule.is_open) {
+        return {day: dayName, opening_time: daySchedule.opening_time};
+      }
+    }
+    // If none found, return null or something default
+    return null;
+  }
+
+  useEffect(() => {
+    async function fetchDoor() {
+      try {
+        const resp = await axios.get('/doors/get-door', {
+          params: {id: Door.DOOR_ID},
+        });
+
+        if (resp.data) {
+          const now = new Date();
+          const todayIndex = now.getDay();
+
+          const isLabOpenStatus = resp.data.schedule
+            ? isLabOpen(resp.data.schedule)
+            : false;
+
+          const nextOpen = getNextOpenDay(resp.data.schedule, todayIndex);
+
+          // console.log('resp.data.schedule:', resp.data.schedule);
+          // console.log('isLabOpenStatus:', isLabOpenStatus);
+          // console.log('current_day:', days[now.getDay()]);
+
+          setDoor({
+            ...resp.data,
+            is_lab_open: isLabOpenStatus,
+            current_day: days[todayIndex],
+            nextOpen: nextOpen,
+          });
+
+          toast.show('door found...');
+        }
+      } catch (error) {
+        console.error('Error fetching door:', error);
+      }
+    }
+
+    fetchDoor();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log('door updated.....');
+  // }, [door]);
 
   async function requestBluetoothPermissions() {
     console.log('checking for permission..');
@@ -129,17 +238,18 @@ const HomeScreen = () => {
         {/* The LAB is {doorStatus ? 'Closed.' : 'Open.'}. */}
       {/* The LAB is Open */}
       {/* </Text> */}
-      <Text
-        style={{
-          margin: 10,
-          fontWeight: 'bold',
-          fontSize: 20,
-          alignSelf: 'center',
-          color: DefaultColors.red,
-        }}>
-        {/* The LAB is {doorStatus ? 'Closed.' : 'Open.'}. */}
-        The LAB is Closed
-      </Text>
+      {door && (
+        <Text
+          style={{
+            margin: 10,
+            fontWeight: 'bold',
+            fontSize: 20,
+            alignSelf: 'center',
+            color: door.is_lab_open ? DefaultColors.green : DefaultColors.red,
+          }}>
+          The Lab is {door.is_lab_open ? 'Open' : 'Closed'}
+        </Text>
+      )}
       <View
         style={{
           // backgroundColor: 'blue',
@@ -160,30 +270,30 @@ const HomeScreen = () => {
             alignItems: 'center',
             padding: 10,
           }}>
-          {/* <Image
-            source={require('../../../assets/Images/door-open.png')}
-            style={{width: 60, height: 60, alignSelf: 'center'}}
-            resizeMode="contain"
-          /> */}
-          {/* <Image
-            source={require('../../../assets/Images/door-open.png')}
-            style={{width: 60, height: 60, alignSelf: 'center'}}
-            resizeMode="contain"
-          /> */}
-          <Image
-            source={require('../../../assets/Images/door-close.png')}
-            style={{width: 60, height: 60, alignSelf: 'center'}}
-            resizeMode="contain"
-          />
+          {door && (
+            <Image
+              source={
+                door?.door_status
+                  ? require('../../../assets/Images/door-open.png')
+                  : require('../../../assets/Images/door-close.png')
+              }
+              style={{width: 60, height: 60, alignSelf: 'center'}}
+              resizeMode="contain"
+            />
+          )}
           <Text style={{alignSelf: 'center'}}>Door Status</Text>
-          <Text
-            style={{
-              alignSelf: 'center',
-              color: DefaultColors.red,
-              fontWeight: 'bold',
-            }}>
-            Closed
-          </Text>
+          {door && (
+            <Text
+              style={{
+                alignSelf: 'center',
+                color: door?.door_status
+                  ? DefaultColors.green
+                  : DefaultColors.red,
+                fontWeight: 'bold',
+              }}>
+              {door?.door_lock_status ? 'Open' : 'Closed'}
+            </Text>
+          )}
         </Card>
         <View style={{width: '45%', margin: 5}}>
           <Card style={{padding: 5, margin: 5}}>
@@ -206,15 +316,32 @@ const HomeScreen = () => {
             <Text style={{alignSelf: 'center'}}>Closing In</Text>
             <Text style={{alignSelf: 'center'}}>2 h 30 m</Text>
           </Card> */}
-          <Card style={{padding: 5, margin: 5}}>
-            <Image
-              source={require('../../../assets/Images/reopen.png')}
-              style={{width: 30, height: 30, alignSelf: 'center'}}
-              resizeMode="contain"
-            />
-            <Text style={{alignSelf: 'center'}}>Re-Open</Text>
-            <Text style={{alignSelf: 'center'}}>10 am</Text>
-          </Card>
+          {door && (
+            <Card style={{padding: 5, margin: 5}}>
+              <Image
+                source={
+                  door?.is_lab_open
+                    ? require('../../../assets/Images/padlock.png')
+                    : require('../../../assets/Images/reopen.png')
+                }
+                style={{width: 30, height: 30, alignSelf: 'center'}}
+                resizeMode="contain"
+              />
+              <Text style={{alignSelf: 'center'}}>
+                {door.is_lab_open ? 'Closing At' : 'Re-Open'}
+              </Text>
+
+              {door && (
+                <Text style={{alignSelf: 'center'}}>
+                  {door?.is_lab_open
+                    ? door.schedule[door.current_day].closing_time + ' hrr'
+                    : door?.nextOpen
+                    ? `${door?.nextOpen.day} at ${door?.nextOpen.opening_time}`
+                    : 'No upcoming opening'}
+                </Text>
+              )}
+            </Card>
+          )}
         </View>
       </View>
       <View
@@ -236,21 +363,24 @@ const HomeScreen = () => {
           <Text style={{margin: 10, alignSelf: 'center', fontSize: 20}}>
             Lab Status
           </Text>
-          <Image
-            source={require('../../../assets/Images/no_users.png')}
-            resizeMode="contain"
-            style={{width: 80, height: 80, alignSelf: 'center'}}
-          />
-          {/* <Image
-            source={require('../../../assets/Images/no_users.png')}
-            resizeMode="contain"
-            style={{width: 100, height: 100, alignSelf: 'center'}}
-          /> */}
 
-          <Text style={{alignSelf: 'center', margin: 10, fontSize: 30}}>
-            {/* Occupied */}
-            Vacant
-          </Text>
+          {door && (
+            <Image
+              source={
+                door.door_room_status
+                  ? require('../../../assets/Images/users.png')
+                  : require('../../../assets/Images/no_users.png')
+              }
+              resizeMode="contain"
+              style={{width: 80, height: 80, alignSelf: 'center'}}
+            />
+          )}
+
+          {door && (
+            <Text style={{alignSelf: 'center', margin: 10, fontSize: 30}}>
+              {door.door_room_status ? RoomStatus.OCCUPIED : RoomStatus.VACANT}
+            </Text>
+          )}
         </Card>
 
         <View
