@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Switch,
   Text,
@@ -20,15 +20,20 @@ import {axios} from '../../Utils/Axios';
 import {Door, RoomStatus} from '../../Utils/Constants';
 import {useToast} from 'react-native-toast-notifications';
 import moment from 'moment';
+import {useUser} from '../../Contexts/UserProvider';
 
 const manager = new BleManager();
+// const interval = null;
 
 const HomeScreen = () => {
   const [door, setDoor] = useState(null);
   const toast = useToast();
+  const {user} = useUser();
+  // const monitorInterval = useRef(null);
+  // const manager = useRef(new BleManager()).current;
 
   const [doorStatus, setDoorStatus] = useState(false);
-  const [autoUnlock, setAutoUnlock] = useState(false);
+  const [autoUnlock, setAutoUnlock] = useState(user?.auto_unlock);
   const [labStatus, setLabStatus] = useState(true);
   const [deviceFound, setDeviceFound] = useState(true);
 
@@ -96,6 +101,7 @@ const HomeScreen = () => {
   }
 
   useEffect(() => {
+    // setAutoUnlock(user.auto_unlock);
     async function fetchDoor() {
       try {
         const resp = await axios.get('/doors/get-door', {
@@ -123,7 +129,7 @@ const HomeScreen = () => {
             nextOpen: nextOpen,
           });
 
-          toast.show('door found...');
+          toast.show('door found....');
         }
       } catch (error) {
         console.error('Error fetching door:', error);
@@ -133,9 +139,27 @@ const HomeScreen = () => {
     fetchDoor();
   }, []);
 
-  // useEffect(() => {
-  //   console.log('door updated.....');
-  // }, [door]);
+  useEffect(() => {
+    console.log('auto unlock updated.', autoUnlock);
+
+    async function updateUserAutoUnlock() {
+      await axios.patch('/users/update-auto-unlock', {
+        id: user._id,
+        autoUnlock: autoUnlock,
+      });
+    }
+    updateUserAutoUnlock();
+
+    if (autoUnlock) {
+      ScanForBluetooth();
+    } else {
+      console.log('stop scan called');
+      manager.stopDeviceScan();
+      // manager.destroy();
+      // stopMonitoring();
+      // clearInterval(interval);
+    }
+  }, [autoUnlock]);
 
   async function requestBluetoothPermissions() {
     console.log('checking for permission..');
@@ -188,10 +212,57 @@ const HomeScreen = () => {
     return true;
   };
 
+  const monitorDeviceDistance = async deviceId => {
+    // const interval = setInterval(async () => {
+    monitorInterval.current = setInterval(async () => {
+      try {
+        // Step 1: Connect to device
+        const connectedDevice = await manager.connectToDevice(deviceId, {
+          autoConnect: true,
+        });
+
+        // Step 2: Ensure discovery of services/characteristics
+        await connectedDevice.discoverAllServicesAndCharacteristics();
+
+        // Step 3: Confirm connection (optional but safer)
+        const isConnected = await connectedDevice.isConnected();
+        if (!isConnected) {
+          console.log('Device not connected yet');
+          return;
+        }
+
+        // Step 4: Read RSSI
+        const updatedDevice = await connectedDevice.readRSSI();
+        console.log(`📶 RSSI: ${updatedDevice.rssi}`);
+
+        // TODO: Add your position logic here
+      } catch (err) {
+        console.log('❌ Error reading RSSI:', err.message);
+        if (err.reason) console.log('Reason:', err.reason);
+      }
+    }, 5000); // check every 5 seconds
+  };
+
+  const stopMonitoring = () => {
+    if (monitorInterval.current) {
+      clearInterval(monitorInterval.current);
+      monitorInterval.current = null;
+      console.log('Stopped RSSI monitoring.');
+    }
+  };
+
+  const BlutoothInterval = () => {
+    const interval = setInterval(() => {
+      console.log('interval running...');
+      ScanForBluetooth();
+    }, 5000);
+  };
+
   const ScanForBluetooth = async () => {
     // setScanStatus('Scanning ...');
 
     // console.log('Scanning Started...');
+
     const granted = await requestBluetoothPermissions();
     if (granted) {
       const locationBluetooth = await CheckDeviceLocationAndBluetooth();
@@ -203,11 +274,23 @@ const HomeScreen = () => {
             return;
           }
 
-          if (device && device.name === 'sirajesp') {
+          if (
+            device &&
+            device.name === Door.DOOR_ID &&
+            device.rssi >= Door.UNLOCK_DISTANCE
+          ) {
             // setScanStatus(device.name);
-            console.log('device found : siraj esp');
+            console.log('device found :', Door.DOOR_ID);
             console.log(device);
             manager.stopDeviceScan();
+
+            // if (device.rssi >= Door.UNLOCK_DISTANCE) {
+            //   console.log('distance meet...');
+            //   manager.stopDeviceScan();
+            // }
+            // clearInterval(interval);
+
+            // monitorDeviceDistance(device.id);
           } else {
             console.log('no device found siraj esp');
           }
@@ -291,7 +374,7 @@ const HomeScreen = () => {
                   : DefaultColors.red,
                 fontWeight: 'bold',
               }}>
-              {door?.door_lock_status ? 'Open' : 'Closed'}
+              {door?.door_status ? 'Open' : 'Closed'}
             </Text>
           )}
         </Card>
@@ -302,8 +385,8 @@ const HomeScreen = () => {
               style={{width: 30, height: 30, alignSelf: 'center'}}
               resizeMode="contain"
             />
-            <Text style={{alignSelf: 'center'}}>0</Text>
-            <Text style={{alignSelf: 'center'}}>Supervisors In Lab</Text>
+            <Text style={{alignSelf: 'center'}}>{door?.supervisorCount}</Text>
+            <Text style={{alignSelf: 'center'}}>Supervisor In Lab</Text>
           </Card>
 
           {/* repon or closed in */}
@@ -337,7 +420,7 @@ const HomeScreen = () => {
                     ? door.schedule[door.current_day].closing_time + ' hrr'
                     : door?.nextOpen
                     ? `${door?.nextOpen.day} at ${door?.nextOpen.opening_time}`
-                    : 'No upcoming opening'}
+                    : 'No upcoming opening.'}
                 </Text>
               )}
             </Card>

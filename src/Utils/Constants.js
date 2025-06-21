@@ -17,4 +17,5 @@ export const RoomStatus = {
 export const Door = {
   DOOR_ID: 'Device_E0891425BF58',
   //   DOOR_ID: 'Device_E0891425BF58s',
+  UNLOCK_DISTANCE: -60,
 };
