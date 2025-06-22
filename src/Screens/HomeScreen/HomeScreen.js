@@ -21,14 +21,16 @@ import {Door, RoomStatus} from '../../Utils/Constants';
 import {useToast} from 'react-native-toast-notifications';
 import moment from 'moment';
 import {useUser} from '../../Contexts/UserProvider';
+import {useDoor} from '../../Contexts/DoorProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const manager = new BleManager();
 // const interval = null;
 
 const HomeScreen = () => {
-  const [door, setDoor] = useState(null);
   const toast = useToast();
-  const {user} = useUser();
+  const {user, setUser} = useUser();
+  const {door, setDoor} = useDoor();
   // const monitorInterval = useRef(null);
   // const manager = useRef(new BleManager()).current;
 
@@ -129,7 +131,7 @@ const HomeScreen = () => {
             nextOpen: nextOpen,
           });
 
-          toast.show('door found....');
+          // toast.show('door found....');
         }
       } catch (error) {
         console.error('Error fetching door:', error);
@@ -143,10 +145,13 @@ const HomeScreen = () => {
     console.log('auto unlock updated.', autoUnlock);
 
     async function updateUserAutoUnlock() {
-      await axios.patch('/users/update-auto-unlock', {
+      const resp = await axios.patch('/users/update-auto-unlock', {
         id: user._id,
         autoUnlock: autoUnlock,
       });
+
+      setUser(resp.data);
+      await AsyncStorage.setItem('user', JSON.stringify(resp.data));
     }
     updateUserAutoUnlock();
 
