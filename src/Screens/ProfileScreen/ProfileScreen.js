@@ -21,6 +21,7 @@ import {useUser} from '../../Contexts/UserProvider';
 import {useDoor} from '../../Contexts/DoorProvider';
 import LabTimingsComponent from '../../Components/LabTimings';
 import {black} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import {axios} from '../../Utils/Axios';
 
 const ProfileScreen = () => {
   // const initialSchedule = {
@@ -35,7 +36,7 @@ const ProfileScreen = () => {
 
   const navigation = useNavigation();
   const {user, setUser} = useUser();
-  const {door} = useDoor();
+  const {door, setDoor} = useDoor();
   const initialSchedule = door.schedule;
 
   console.log('door in profile screen : ', door);
@@ -55,6 +56,13 @@ const ProfileScreen = () => {
 
   const onPressUpdateTime = async () => {
     console.log('Updated time : ', schedule);
+
+    const resp = await axios.patch('/doors/update-timings', {
+      id: door._id,
+      schedule,
+    });
+
+    // setDoor(resp.data);
     setEditable(false);
   };
 
