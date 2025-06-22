@@ -27,7 +27,7 @@ const RequestComponent = ({item}) => {
           style={
             item.RequestedRole == 'Supervisor' && {color: DefaultColors.orange}
           }>
-          {item.RequestedRole}
+          {item.requested_role}
         </Text>
       </View>
 

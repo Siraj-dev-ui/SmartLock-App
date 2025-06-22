@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Switch,
@@ -9,58 +9,22 @@ import {
 import {Card, Text} from 'react-native-paper';
 import {Colors, DefaultColors, FontSize} from '../../Utils/Theme';
 import RequestComponent from '../../Components/RequestComponent';
+import {axios} from '../../Utils/Axios';
 
 const RequestsScreen = () => {
-  const data = [
-    {
-      id: 1,
-      name: 'Ayaan Khan',
-      email: 'ayaan.khan@gmail.com',
-      RequestedRole: 'User',
-    },
-    {
-      id: 2,
-      name: 'John Smith',
-      email: 'john.smith@gmail.com',
-      RequestedRole: 'Supervisor',
-    },
-    {
-      id: 3,
-      name: 'Ravi Patel',
-      email: 'ravi.patel@gmail.com',
-      RequestedRole: 'User',
-    },
-    {
-      id: 4,
-      name: 'Zain Ali',
-      email: 'zain.ali@gmail.com',
-      RequestedRole: 'Supervisor',
-    },
-    {
-      id: 5,
-      name: 'Omar Farooq',
-      email: 'omar.farooq@gmail.com',
-      RequestedRole: 'User',
-    },
-    {
-      id: 6,
-      name: 'Emily Watson',
-      email: 'emily.watson@gmail.com',
-      RequestedRole: 'User',
-    },
-    {
-      id: 7,
-      name: 'Fatima Sheikh',
-      email: 'fatima.sheikh@gmail.com',
-      RequestedRole: 'User',
-    },
-    {
-      id: 8,
-      name: 'Rahul Mehta',
-      email: 'rahul.mehta@gmail.com',
-      RequestedRole: 'Supervisor',
-    },
-  ];
+  const [requests, setRequests] = useState([]);
+
+  const onPressApprove = () => {};
+  const onPressReject = () => {};
+
+  useEffect(() => {
+    const getPendingRequest = async () => {
+      const resp = await axios.get('/users/pending-requests');
+
+      setRequests(resp.data);
+    };
+    getPendingRequest();
+  }, []);
   return (
     <>
       <Text
@@ -74,9 +38,9 @@ const RequestsScreen = () => {
         Sign Up Requests
       </Text>
       <FlatList
-        data={data}
+        data={requests}
         renderItem={({item}) => <RequestComponent item={item} />}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item._id.toString()}
       />
     </>
   );
