@@ -16,6 +16,8 @@ export const DefaultColors = {
   white: 'white',
   gray: '#BAC7BE',
   temp: '#fff',
+  black: '#000',
+  lightRed: '#FFADB0',
 };
 
 export const Colors = {
