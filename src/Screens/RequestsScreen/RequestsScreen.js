@@ -10,9 +10,10 @@ import {Card, Text} from 'react-native-paper';
 import {Colors, DefaultColors, FontSize} from '../../Utils/Theme';
 import RequestComponent from '../../Components/RequestComponent';
 import {axios} from '../../Utils/Axios';
+import {useRequests} from '../../Contexts/RequestsProvider';
 
 const RequestsScreen = () => {
-  const [requests, setRequests] = useState([]);
+  const {requests, setRequests} = useRequests();
 
   const onPressApprove = async id => {
     const resp = await axios.patch('/users/approve-request', null, {
@@ -33,14 +34,6 @@ const RequestsScreen = () => {
     }
   };
 
-  useEffect(() => {
-    const getPendingRequest = async () => {
-      const resp = await axios.get('/users/pending-requests');
-
-      setRequests(resp.data);
-    };
-    getPendingRequest();
-  }, []);
   return (
     <>
       <Text
@@ -53,17 +46,24 @@ const RequestsScreen = () => {
         }}>
         Sign Up Requests
       </Text>
-      <FlatList
-        data={requests}
-        renderItem={({item}) => (
-          <RequestComponent
-            item={item}
-            onPressApprove={onPressApprove}
-            onPressReject={onPressReject}
-          />
-        )}
-        keyExtractor={item => item._id.toString()}
-      />
+
+      {requests.length !== 0 ? (
+        <FlatList
+          data={requests}
+          renderItem={({item}) => (
+            <RequestComponent
+              item={item}
+              onPressApprove={onPressApprove}
+              onPressReject={onPressReject}
+            />
+          )}
+          keyExtractor={item => item._id.toString()}
+        />
+      ) : (
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <Text style={{fontSize: 15}}>Currently No Request</Text>
+        </View>
+      )}
     </>
   );
 };

@@ -12,11 +12,16 @@ import {DefaultColors} from '../Utils/Theme';
 import ProfileScreen from '../Screens/ProfileScreen';
 import {Roles} from '../Utils/Constants';
 import {useUser} from '../Contexts/UserProvider';
+import {useRequests} from '../Contexts/RequestsProvider';
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigation = () => {
   const {user} = useUser();
+  const {requests} = useRequests();
 
+  useEffect(() => {
+    console.log('requests Count is ', requests.length);
+  }, []);
   // console.log('user user : ', user);
 
   return (
@@ -48,7 +53,7 @@ const BottomTabNavigation = () => {
           name="Requests"
           component={RequestsScreen}
           options={{
-            tabBarBadge: 8,
+            tabBarBadge: requests?.length,
             tabBarIcon: ({focused, color, size}) => (
               <FontAwesome5
                 name="hands-helping"

@@ -23,6 +23,7 @@ import moment from 'moment';
 import {useUser} from '../../Contexts/UserProvider';
 import {useDoor} from '../../Contexts/DoorProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useRequests} from '../../Contexts/RequestsProvider';
 
 const manager = new BleManager();
 // const interval = null;
@@ -31,6 +32,7 @@ const HomeScreen = () => {
   const toast = useToast();
   const {user, setUser} = useUser();
   const {door, setDoor} = useDoor();
+  const {setRequests} = useRequests();
   // const monitorInterval = useRef(null);
   // const manager = useRef(new BleManager()).current;
 
@@ -137,8 +139,14 @@ const HomeScreen = () => {
         console.error('Error fetching door:', error);
       }
     }
+    async function getPendingRequest() {
+      const resp = await axios.get('/users/pending-requests');
+
+      setRequests(resp.data);
+    }
 
     fetchDoor();
+    getPendingRequest();
   }, []);
 
   useEffect(() => {

@@ -1,12 +1,16 @@
 import React from 'react';
 import {UserProvider} from './UserProvider';
 import {DoorProvider} from './DoorProvider';
+import {RequestsProvider} from './RequestsProvider';
 
 const AppContext = ({children}) => {
   return (
     <UserProvider>
       {/* Add more providers here as needed */}
-      <DoorProvider>{children}</DoorProvider>
+
+      <DoorProvider>
+        <RequestsProvider>{children}</RequestsProvider>
+      </DoorProvider>
     </UserProvider>
   );
 };
