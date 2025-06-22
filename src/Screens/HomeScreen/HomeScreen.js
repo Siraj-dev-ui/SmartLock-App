@@ -38,6 +38,7 @@ const HomeScreen = () => {
   // const manager = useRef(new BleManager()).current;
 
   const [doorStatus, setDoorStatus] = useState(false);
+  const [actionPending, setActionPending] = useState(false);
   const [autoUnlock, setAutoUnlock] = useState(user?.auto_unlock);
   const [labStatus, setLabStatus] = useState(true);
   const [deviceFound, setDeviceFound] = useState(false);
@@ -459,6 +460,7 @@ const HomeScreen = () => {
               style={{
                 borderRadius: 75,
               }}
+              // disabled={lock}
               onPress={() => onPressUnlock()}>
               {/* <Text
               style={{
