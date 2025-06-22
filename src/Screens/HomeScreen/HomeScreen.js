@@ -8,6 +8,7 @@ import {
   Image,
   ActivityIndicator,
   Modal,
+  ScrollView,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {BleManager, State} from 'react-native-ble-plx';
@@ -17,7 +18,7 @@ import DeviceInfo from 'react-native-device-info';
 import {Colors, DefaultColors} from '../../Utils/Theme';
 import {Card} from 'react-native-paper';
 import {axios} from '../../Utils/Axios';
-import {Door, RoomStatus} from '../../Utils/Constants';
+import {Actions, Door, RoomStatus} from '../../Utils/Constants';
 import {useToast} from 'react-native-toast-notifications';
 import moment from 'moment';
 import {useUser} from '../../Contexts/UserProvider';
@@ -39,10 +40,25 @@ const HomeScreen = () => {
   const [doorStatus, setDoorStatus] = useState(false);
   const [autoUnlock, setAutoUnlock] = useState(user?.auto_unlock);
   const [labStatus, setLabStatus] = useState(true);
-  const [deviceFound, setDeviceFound] = useState(true);
+  const [deviceFound, setDeviceFound] = useState(false);
 
   const [lockStatus, setLockStatus] = useState(true);
   const [scanStatus, setScanStatus] = useState('IDLE');
+
+  const onPressUnlock = async () => {
+    console.log('lock status locla : ', lockStatus);
+    if (lockStatus) {
+      const resp = await axios.post('/actions/add-action', {
+        action_id: Actions.UNLOCK_DOOR,
+      });
+      setLockStatus(false);
+    } else {
+      const resp = await axios.post('/actions/add-action', {
+        action_id: Actions.LOCK_DOOR,
+      });
+      setLockStatus(true);
+    }
+  };
 
   const days = [
     'Sunday',
@@ -174,6 +190,8 @@ const HomeScreen = () => {
     }
   }, [autoUnlock]);
 
+  // bluetooth code handling
+
   async function requestBluetoothPermissions() {
     console.log('checking for permission..');
     if (Platform.OS === 'android') {
@@ -223,45 +241,6 @@ const HomeScreen = () => {
     }
 
     return true;
-  };
-
-  const monitorDeviceDistance = async deviceId => {
-    // const interval = setInterval(async () => {
-    monitorInterval.current = setInterval(async () => {
-      try {
-        // Step 1: Connect to device
-        const connectedDevice = await manager.connectToDevice(deviceId, {
-          autoConnect: true,
-        });
-
-        // Step 2: Ensure discovery of services/characteristics
-        await connectedDevice.discoverAllServicesAndCharacteristics();
-
-        // Step 3: Confirm connection (optional but safer)
-        const isConnected = await connectedDevice.isConnected();
-        if (!isConnected) {
-          console.log('Device not connected yet');
-          return;
-        }
-
-        // Step 4: Read RSSI
-        const updatedDevice = await connectedDevice.readRSSI();
-        console.log(`📶 RSSI: ${updatedDevice.rssi}`);
-
-        // TODO: Add your position logic here
-      } catch (err) {
-        console.log('❌ Error reading RSSI:', err.message);
-        if (err.reason) console.log('Reason:', err.reason);
-      }
-    }, 5000); // check every 5 seconds
-  };
-
-  const stopMonitoring = () => {
-    if (monitorInterval.current) {
-      clearInterval(monitorInterval.current);
-      monitorInterval.current = null;
-      console.log('Stopped RSSI monitoring.');
-    }
   };
 
   const BlutoothInterval = () => {
@@ -317,23 +296,13 @@ const HomeScreen = () => {
     console.log('Finished Scanning...');
   };
 
-  const UnLockRequest = () => {
-    setDoorStatus(!doorStatus);
-    Alert.alert('The Lab Is Closed.\nTry Again During Opening Hours.');
-  };
+  // const UnLockRequest = () => {
+  //   // setDoorStatus(!doorStatus);
+  //   console.log('unlock request..');
+  //   Alert.alert('The Lab Is Closed.\nTry Again During Opening Hours.');
+  // };
   return (
-    <View style={{flex: 1}}>
-      {/* <Text
-        style={{
-          margin: 10,
-          fontWeight: 'bold',
-          fontSize: 20,
-          alignSelf: 'center',
-          color: DefaultColors.green,
-        }}>
-        {/* The LAB is {doorStatus ? 'Closed.' : 'Open.'}. */}
-      {/* The LAB is Open */}
-      {/* </Text> */}
+    <ScrollView style={{flex: 1}}>
       {door && (
         <Text
           style={{
@@ -443,8 +412,6 @@ const HomeScreen = () => {
       <View
         style={{
           flex: 1,
-          // borderWidth: 6,
-          // borderColor: labStatus ? DefaultColors.green : DefaultColors.red,
         }}>
         <Card
           style={{
@@ -483,9 +450,7 @@ const HomeScreen = () => {
           style={{
             flex: 1,
             alignItems: 'center',
-            // justifyContent: 'center',
-            // margin: 20,
-            // borderWidth: 6,
+
             flex: 1,
             // borderColor: labStatus ? DefaultColors.green : DefaultColors.red,
           }}>
@@ -494,8 +459,7 @@ const HomeScreen = () => {
               style={{
                 borderRadius: 75,
               }}
-              // onPress={() => setDoorStatus(!doorStatus)}>
-              onPress={() => UnLockRequest()}>
+              onPress={() => onPressUnlock()}>
               {/* <Text
               style={{
                 color: DefaultColors.white,
@@ -504,7 +468,7 @@ const HomeScreen = () => {
               }}>
               {doorStatus ? 'Lock' : 'Unlock'}
             </Text> */}
-              {doorStatus ? (
+              {!lockStatus ? (
                 <Image
                   source={require('../../../assets/Images/Unlock.png')}
                   resizeMode="contain"
@@ -603,20 +567,9 @@ const HomeScreen = () => {
               )}
             </Card>
           )}
-
-          {/* <TouchableOpacity
-        style={{
-          backgroundColor: DefaultColors.orange,
-          padding: 10,
-        }}
-        onPress={() => ScanForBluetooth()} // or onPress={() => ScanForBluetooth()}
-      >
-        <Text>Scan Blutooth</Text>
-        <Text>{scanStatus}</Text>
-      </TouchableOpacity> */}
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
