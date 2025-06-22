@@ -23,10 +23,14 @@ const RequestsScreen = () => {
       setRequests(requests.filter(item => item._id !== id));
     }
   };
-  const onPressReject = id => {
-    const update = requests.filter(item => item._id !== id);
+  const onPressReject = async id => {
+    const resp = await axios.patch('/users/reject-request', null, {
+      params: {id},
+    });
 
-    setRequests(update);
+    if (resp.status === 200) {
+      setRequests(requests.filter(item => item._id !== id));
+    }
   };
 
   useEffect(() => {
