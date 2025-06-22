@@ -14,8 +14,20 @@ import {axios} from '../../Utils/Axios';
 const RequestsScreen = () => {
   const [requests, setRequests] = useState([]);
 
-  const onPressApprove = () => {};
-  const onPressReject = () => {};
+  const onPressApprove = async id => {
+    const resp = await axios.patch('/users/approve-request', null, {
+      params: {id},
+    });
+
+    if (resp.status === 200) {
+      setRequests(requests.filter(item => item._id !== id));
+    }
+  };
+  const onPressReject = id => {
+    const update = requests.filter(item => item._id !== id);
+
+    setRequests(update);
+  };
 
   useEffect(() => {
     const getPendingRequest = async () => {
@@ -39,7 +51,13 @@ const RequestsScreen = () => {
       </Text>
       <FlatList
         data={requests}
-        renderItem={({item}) => <RequestComponent item={item} />}
+        renderItem={({item}) => (
+          <RequestComponent
+            item={item}
+            onPressApprove={onPressApprove}
+            onPressReject={onPressReject}
+          />
+        )}
         keyExtractor={item => item._id.toString()}
       />
     </>

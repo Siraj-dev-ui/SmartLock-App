@@ -3,7 +3,7 @@ import {View, TouchableOpacity} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import {Colors, DefaultColors} from '../../Utils/Theme';
 
-const RequestComponent = ({item}) => {
+const RequestComponent = ({item, onPressApprove, onPressReject}) => {
   return (
     <Card style={{margin: 15, padding: 10, position: 'relative'}}>
       <View style={{flexDirection: 'row'}}>
@@ -47,7 +47,8 @@ const RequestComponent = ({item}) => {
             borderRadius: 10,
             backgroundColor: Colors.reject,
             // margin: 5,
-          }}>
+          }}
+          onPress={() => onPressReject(item._id)}>
           <Text
             style={{
               alignSelf: 'center',
@@ -66,7 +67,8 @@ const RequestComponent = ({item}) => {
             borderRadius: 10,
             backgroundColor: Colors.approve,
             // margin: 5,
-          }}>
+          }}
+          onPress={() => onPressApprove(item._id)}>
           <Text
             style={{
               alignSelf: 'center',
