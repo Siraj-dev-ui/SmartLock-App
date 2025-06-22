@@ -19,3 +19,8 @@ export const Door = {
   //   DOOR_ID: 'Device_E0891425BF58s',
   UNLOCK_DISTANCE: -60,
 };
+
+export const Actions = {
+  LOCK_DOOR: 1,
+  UNLOCK_DOOR: 2,
+};
