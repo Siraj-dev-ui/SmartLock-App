@@ -1,13 +1,14 @@
 import React from 'react';
 import {UserProvider} from './UserProvider';
+import {DoorProvider} from './DoorProvider';
 
-const AppProviders = ({children}) => {
+const AppContext = ({children}) => {
   return (
     <UserProvider>
       {/* Add more providers here as needed */}
-      {children}
+      <DoorProvider>{children}</DoorProvider>
     </UserProvider>
   );
 };
 
-export default AppProviders;
+export default AppContext;

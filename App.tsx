@@ -3,17 +3,17 @@ import MainNavigation from './src/Navigations/MainNavigation';
 import {PaperProvider} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ToastProvider} from 'react-native-toast-notifications';
-import AppProviders from './src/Contexts/AppProvider';
+import AppContext from './src/Contexts/AppContext';
 
 function App(): React.JSX.Element {
   return (
-    <AppProviders>
+    <AppContext>
       <PaperProvider>
         <ToastProvider>
           <MainNavigation />
         </ToastProvider>
       </PaperProvider>
-    </AppProviders>
+    </AppContext>
   );
 }
 
