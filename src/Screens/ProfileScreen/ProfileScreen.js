@@ -22,6 +22,7 @@ import {useDoor} from '../../Contexts/DoorProvider';
 import LabTimingsComponent from '../../Components/LabTimings';
 import {black} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import {axios} from '../../Utils/Axios';
+import socket from '../../Socket/Socket';
 
 const ProfileScreen = () => {
   // const initialSchedule = {
@@ -48,6 +49,9 @@ const ProfileScreen = () => {
   const onPressLogout = async () => {
     await AsyncStorage.removeItem('user');
     setUser(null);
+    if (socket && socket.connected) {
+      socket.disconnect();
+    }
     navigation.reset({
       index: 0,
       routes: [{name: 'LoginScreen'}],

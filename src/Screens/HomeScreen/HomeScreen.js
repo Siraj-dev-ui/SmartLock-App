@@ -25,6 +25,7 @@ import {useUser} from '../../Contexts/UserProvider';
 import {useDoor} from '../../Contexts/DoorProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRequests} from '../../Contexts/RequestsProvider';
+import socket from '../../Socket/Socket';
 
 const manager = new BleManager();
 // const interval = null;
@@ -48,17 +49,18 @@ const HomeScreen = () => {
 
   const onPressUnlock = async () => {
     console.log('lock status locla : ', lockStatus);
-    if (lockStatus) {
-      const resp = await axios.post('/actions/add-action', {
+    if (door?.door_lock_status) {
+      await axios.post('/actions/add-action', {
         action_id: Actions.UNLOCK_DOOR,
       });
-      setLockStatus(false);
+      // setLockStatus(false);
     } else {
-      const resp = await axios.post('/actions/add-action', {
+      await axios.post('/actions/add-action', {
         action_id: Actions.LOCK_DOOR,
       });
-      setLockStatus(true);
+      // setLockStatus(true);
     }
+    setActionPending(true);
   };
 
   const days = [
@@ -166,6 +168,64 @@ const HomeScreen = () => {
     getPendingRequest();
   }, []);
 
+  // const [message, setMessage] = useState('');
+
+  // Sockets
+  useEffect(() => {
+    socket.connect();
+
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket');
+    });
+
+    // socket.on('message', data => {
+    //   console.log('Received message:', data);
+    //   setMessage(data);
+    // });
+
+    socket.on('updateDoorStatus', data => {
+      console.log('Door Status...', data.status);
+      setDoor(prevDoor => ({
+        ...prevDoor,
+        door_status: data.status,
+      }));
+    });
+
+    socket.on('updateLockStatus', data => {
+      console.log('Lock Status...', data.status);
+      setDoor(prevDoor => ({
+        ...prevDoor,
+        door_lock_status: data.status,
+      }));
+
+      setActionPending(false);
+    });
+
+    socket.on('updateRoomStatus', data => {
+      console.log('Room Status...', data.status);
+
+      setDoor(prevDoor => ({
+        ...prevDoor,
+        door_room_status: data.status,
+      }));
+    });
+
+    socket.on('updateSupervisorCount', data => {
+      console.log('Supervisor Count...', data.count);
+
+      setDoor(prevDoor => ({
+        ...prevDoor,
+        supervisorCount: data.count,
+      }));
+    });
+
+    // Clean up
+    return () => {
+      // console.log('socket Disconnecting..');
+      socket.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     console.log('auto unlock updated.', autoUnlock);
 
@@ -181,6 +241,7 @@ const HomeScreen = () => {
     updateUserAutoUnlock();
 
     if (autoUnlock) {
+      setDeviceFound(false);
       ScanForBluetooth();
     } else {
       console.log('stop scan called');
@@ -251,6 +312,28 @@ const HomeScreen = () => {
     }, 5000);
   };
 
+  const UnlockWithBluetooth = async () => {
+    await axios.post('/actions/add-action', {
+      action_id: Actions.UNLOCK_DOOR,
+    });
+
+    await axios.patch('/users/checked-in', null, {
+      params: {id: user._id},
+    });
+    // setActionPending(true)
+
+    setTimeout(async () => {
+      try {
+        await axios.post('/actions/add-action', {
+          action_id: Actions.LOCK_DOOR,
+        });
+        console.log('Door auto-locked after timeout');
+      } catch (lockErr) {
+        console.error('Auto-lock failed:', lockErr);
+      }
+    }, 1 * 60 * 1000); // 2 minutes
+  };
+
   const ScanForBluetooth = async () => {
     // setScanStatus('Scanning ...');
 
@@ -275,15 +358,10 @@ const HomeScreen = () => {
             // setScanStatus(device.name);
             console.log('device found :', Door.DOOR_ID);
             console.log(device);
+            setDeviceFound(true);
             manager.stopDeviceScan();
 
-            // if (device.rssi >= Door.UNLOCK_DISTANCE) {
-            //   console.log('distance meet...');
-            //   manager.stopDeviceScan();
-            // }
-            // clearInterval(interval);
-
-            // monitorDeviceDistance(device.id);
+            UnlockWithBluetooth();
           } else {
             console.log('no device found siraj esp');
           }
@@ -305,16 +383,29 @@ const HomeScreen = () => {
   return (
     <ScrollView style={{flex: 1}}>
       {door && (
-        <Text
-          style={{
-            margin: 10,
-            fontWeight: 'bold',
-            fontSize: 20,
-            alignSelf: 'center',
-            color: door.is_lab_open ? DefaultColors.green : DefaultColors.red,
-          }}>
-          The Lab is {door.is_lab_open ? 'Open' : 'Closed'}
-        </Text>
+        <>
+          <Text
+            style={{
+              marginTop: 10,
+              fontWeight: 'bold',
+              fontSize: 20,
+              alignSelf: 'center',
+              color: door.is_lab_open ? DefaultColors.green : DefaultColors.red,
+            }}>
+            The Lab is {door.is_lab_open ? 'Open' : 'Closed'}
+          </Text>
+          <Text
+            style={{
+              alignSelf: 'center',
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: door?.door_lock_status
+                ? DefaultColors.orange
+                : DefaultColors.green,
+            }}>
+            {door?.door_lock_status ? '( Locked )' : '( Unlocked )'}
+          </Text>
+        </>
       )}
       <View
         style={{
@@ -431,7 +522,7 @@ const HomeScreen = () => {
           {door && (
             <Image
               source={
-                door.door_room_status
+                door?.door_room_status
                   ? require('../../../assets/Images/users.png')
                   : require('../../../assets/Images/no_users.png')
               }
@@ -470,7 +561,19 @@ const HomeScreen = () => {
               }}>
               {doorStatus ? 'Lock' : 'Unlock'}
             </Text> */}
-              {!lockStatus ? (
+
+              {door && (
+                <Image
+                  source={
+                    door?.door_lock_status
+                      ? require('../../../assets/Images/Locked.png')
+                      : require('../../../assets/Images/Unlock.png')
+                  }
+                  resizeMode="contain"
+                  style={{width: 170, height: 170}}
+                />
+              )}
+              {/* {!lockStatus ? (
                 <Image
                   source={require('../../../assets/Images/Unlock.png')}
                   resizeMode="contain"
@@ -482,7 +585,7 @@ const HomeScreen = () => {
                   resizeMode="contain"
                   style={{width: 170, height: 170}}
                 />
-              )}
+              )} */}
               <View
                 style={{
                   // flexDirection: 'row',
