@@ -10,7 +10,7 @@ export const DefaultColors = {
   lightGreen: '#ADEBB3',
   parrotGreen: '#0BDA51',
   blue: '#4d70fa',
-  orange: 'orange',
+  orange: '#FFA500',
   yellow: 'yellow',
   lightYellow: '#FFFFC5',
   white: 'white',
