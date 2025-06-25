@@ -344,6 +344,7 @@ const HomeScreen = () => {
       const locationBluetooth = await CheckDeviceLocationAndBluetooth();
       if (locationBluetooth) {
         console.log('device scan start...');
+        toast.show('device scan started');
         manager.startDeviceScan(null, null, (error, device) => {
           if (error) {
             console.log('device Scan Error...', error);
@@ -357,6 +358,7 @@ const HomeScreen = () => {
           ) {
             // setScanStatus(device.name);
             console.log('device found :', Door.DOOR_ID);
+            toast.show('device found : ', device.name);
             console.log(device);
             setDeviceFound(true);
             manager.stopDeviceScan();
