@@ -23,6 +23,7 @@ import LabTimingsComponent from '../../Components/LabTimings';
 import {black} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import {axios} from '../../Utils/Axios';
 import socket from '../../Socket/Socket';
+import {Roles} from '../../Utils/Constants';
 
 const ProfileScreen = () => {
   // const initialSchedule = {
@@ -159,52 +160,53 @@ const ProfileScreen = () => {
                   marginHorizontal: 10,
                   // paddingVertical: 10,
                 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginVertical: 5,
-                    // justifyContent: 'center'
-                  }}>
-                  {editable ? (
-                    <TouchableOpacity
-                      onPress={onPressUpdateTime}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginVertical: 5,
-                        // justifyContent: 'center'
-                      }}>
-                      <Text
+                {user?.requested_role === Roles.ADMIN && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginVertical: 5,
+                      // justifyContent: 'center'
+                    }}>
+                    {editable ? (
+                      <TouchableOpacity
+                        onPress={onPressUpdateTime}
                         style={{
-                          // borderColor: DefaultColors.blue,
-                          // borderWidth: 1,
-                          padding: 8,
-                          borderRadius: 5,
-                          backgroundColor: DefaultColors.lightGreen,
-                          color: DefaultColors.green,
-                          fontWeight: 'bold',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginVertical: 5,
+                          // justifyContent: 'center'
                         }}>
-                        UPDATE
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    // <AntDesign
-                    //   name="edit"
-                    //   size={25}
-                    //   color="blue"
-                    //   // color={focused ? 'blue' : ''}
-                    // />
+                        <Text
+                          style={{
+                            // borderColor: DefaultColors.blue,
+                            // borderWidth: 1,
+                            padding: 8,
+                            borderRadius: 5,
+                            backgroundColor: DefaultColors.lightGreen,
+                            color: DefaultColors.green,
+                            fontWeight: 'bold',
+                          }}>
+                          UPDATE
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      // <AntDesign
+                      //   name="edit"
+                      //   size={25}
+                      //   color="blue"
+                      //   // color={focused ? 'blue' : ''}
+                      // />
 
-                    <TouchableOpacity onPress={() => setEditable(true)}>
-                      <Image
-                        source={require('../../../assets/Images/edit.png')}
-                        style={{width: 30, height: 30}}
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
-
+                      <TouchableOpacity onPress={() => setEditable(true)}>
+                        <Image
+                          source={require('../../../assets/Images/edit.png')}
+                          style={{width: 30, height: 30}}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )}
                 {editable && (
                   // <Text
                   //   style={{
