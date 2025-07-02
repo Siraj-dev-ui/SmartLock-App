@@ -113,6 +113,19 @@ If you're having issues getting the above steps to work, see the [Troubleshootin
 ```sh
 cd android
 gradlew assembleRelease
+
+
+```
+
+## Install APK
+
+```sh
+
+adb install android/app/build/outputs/apk/debug/app-debug.apk
+
+// Resintall if already installed
+
+adb install -r android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 # Learn More
