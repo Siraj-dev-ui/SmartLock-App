@@ -331,7 +331,8 @@ const HomeScreen = () => {
       } catch (lockErr) {
         console.error('Auto-lock failed:', lockErr);
       }
-    }, 1 * 60 * 1000); // 2 minutes
+      // }, 1 * 60 * 1000); // 2 minutes
+    }, 30 * 1000); // 30 Seconds
   };
 
   const ScanForBluetooth = async () => {
@@ -493,9 +494,9 @@ const HomeScreen = () => {
               {door && (
                 <Text style={{alignSelf: 'center'}}>
                   {door?.is_lab_open
-                    ? door.schedule[door.current_day].closing_time + ' hrr'
+                    ? door.schedule[door.current_day].closing_time + ' hr'
                     : door?.nextOpen
-                    ? `${door?.nextOpen.day} at ${door?.nextOpen.opening_time}`
+                    ? `${door?.nextOpen.day} at ${door?.nextOpen.opening_time} hr`
                     : 'No upcoming opening.'}
                 </Text>
               )}
