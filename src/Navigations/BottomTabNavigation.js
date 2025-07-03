@@ -19,11 +19,6 @@ const BottomTabNavigation = () => {
   const {user} = useUser();
   const {requests} = useRequests();
 
-  useEffect(() => {
-    console.log('requests Count is ', requests.length);
-  }, []);
-  // console.log('user user : ', user);
-
   return (
     <Tab.Navigator
       initialRouteName="Home"

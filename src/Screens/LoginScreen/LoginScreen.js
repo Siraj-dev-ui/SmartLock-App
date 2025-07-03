@@ -73,7 +73,11 @@ const LoginScreen = () => {
         index: 0,
         routes: [{name: 'BottomTabNavigation'}],
       });
+
+      return;
     }
+
+    toast.show('Login Failed');
 
     // if(resp.data)
   };

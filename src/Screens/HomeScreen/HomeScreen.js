@@ -48,7 +48,6 @@ const HomeScreen = () => {
   const [scanStatus, setScanStatus] = useState('IDLE');
 
   const onPressUnlock = async () => {
-    console.log('lock status locla : ', lockStatus);
     if (door?.door_lock_status) {
       await axios.post('/actions/add-action', {
         action_id: Actions.UNLOCK_DOOR,
@@ -141,10 +140,6 @@ const HomeScreen = () => {
 
           const nextOpen = getNextOpenDay(resp.data.schedule, todayIndex);
 
-          // console.log('resp.data.schedule:', resp.data.schedule);
-          // console.log('isLabOpenStatus:', isLabOpenStatus);
-          // console.log('current_day:', days[now.getDay()]);
-
           setDoor({
             ...resp.data,
             is_lab_open: isLabOpenStatus,
@@ -178,13 +173,7 @@ const HomeScreen = () => {
       console.log('Connected to WebSocket');
     });
 
-    // socket.on('message', data => {
-    //   console.log('Received message:', data);
-    //   setMessage(data);
-    // });
-
     socket.on('updateDoorStatus', data => {
-      console.log('Door Status...', data.status);
       setDoor(prevDoor => ({
         ...prevDoor,
         door_status: data.status,
@@ -286,18 +275,12 @@ const HomeScreen = () => {
     const bluetoothOn = await isBluetoothOn(); // ← call it with ()
     const locationOn = await isLocationOn();
 
-    if (bluetoothOn) {
-      console.log('Bluetooth is ON');
-    } else {
-      console.log('Bluetooth is OFF');
+    if (!bluetoothOn) {
       Alert.alert('Enable Bluetooth to Proceed...');
       return false;
     }
 
-    if (locationOn) {
-      console.log('location on');
-    } else {
-      console.log('location off');
+    if (!locationOn) {
       Alert.alert('Enable Location to Proceed...');
       return false;
     }
@@ -348,7 +331,7 @@ const HomeScreen = () => {
         toast.show('device scan started');
         manager.startDeviceScan(null, null, (error, device) => {
           if (error) {
-            console.log('device Scan Error...', error);
+            toast.show('device Scan Error...');
             return;
           }
 
@@ -365,17 +348,15 @@ const HomeScreen = () => {
             manager.stopDeviceScan();
 
             UnlockWithBluetooth();
-          } else {
-            console.log('no device found siraj esp');
           }
         });
       } else {
-        console.log('enable location and bluetooth of the device...');
+        toast.show('enable location and bluetooth of the device...');
       }
     } else {
-      console.log('grant bluetooth and location permission to the app');
+      toast.show('grant bluetooth and location permission to the app');
     }
-    console.log('Finished Scanning...');
+    // console.log('Finished Scanning...');
   };
 
   // const UnLockRequest = () => {
