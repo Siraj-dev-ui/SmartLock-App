@@ -5,9 +5,6 @@ const RequestsContext = createContext(null);
 export const RequestsProvider = ({children}) => {
   const [requests, setRequests] = useState([]);
 
-  useEffect(() => {
-    console.log('requests context', requests);
-  });
   return (
     <RequestsContext.Provider value={{requests, setRequests}}>
       {children}

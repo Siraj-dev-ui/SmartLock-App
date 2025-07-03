@@ -5,9 +5,6 @@ const DoorContext = createContext(null);
 export const DoorProvider = ({children}) => {
   const [door, setDoor] = useState(null);
 
-  useEffect(() => {
-    console.log('Door context', door);
-  });
   return (
     <DoorContext.Provider value={{door, setDoor}}>
       {children}
