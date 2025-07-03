@@ -1,7 +1,7 @@
 // src/socket.js
 import {io} from 'socket.io-client';
-import {BASE_URL_LOCAL} from '../Utils/Urls';
+import {BASE_URL_LIVE, BASE_URL_LOCAL} from '../Utils/Urls';
 
-const socket = io(BASE_URL_LOCAL); // e.g., 'http://192.168.1.100:3000'
+const socket = io(BASE_URL_LIVE); // e.g., 'http://192.168.1.100:3000'
 
 export default socket;
