@@ -41,8 +41,6 @@ const ProfileScreen = () => {
   const {door, setDoor} = useDoor();
   const initialSchedule = door.schedule;
 
-  console.log('door in profile screen : ', door);
-
   const [isExpanded, setIsExpanded] = useState(false);
   const [editable, setEditable] = useState(false);
   const [schedule, setSchedule] = useState(initialSchedule);
@@ -60,8 +58,6 @@ const ProfileScreen = () => {
   };
 
   const onPressUpdateTime = async () => {
-    console.log('Updated time : ', schedule);
-
     const resp = await axios.patch('/doors/update-timings', {
       id: door._id,
       schedule,

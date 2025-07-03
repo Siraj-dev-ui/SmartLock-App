@@ -28,16 +28,16 @@ const LoginScreen = () => {
 
   useEffect(() => {
     async function checkuser() {
-      console.log('cehcking user');
       const user = await AsyncStorage.getItem('user');
 
       if (user !== null) {
         setUser(JSON.parse(user));
 
         navigation.reset({index: 0, routes: [{name: 'BottomTabNavigation'}]});
-      } else {
-        console.log('user doest not exist.');
       }
+      //  else {
+      //   console.log('user doest not exist.');
+      // }
     }
     checkuser();
   }, []);
@@ -54,8 +54,6 @@ const LoginScreen = () => {
     }
 
     const resp = await axios.post('/users/login', data);
-
-    console.log(resp.data);
 
     if (resp.data.length === 0) {
       toast.show('This Email Does not exists.');

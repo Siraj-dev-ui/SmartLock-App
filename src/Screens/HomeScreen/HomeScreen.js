@@ -181,7 +181,6 @@ const HomeScreen = () => {
     });
 
     socket.on('updateLockStatus', data => {
-      console.log('Lock Status...', data.status);
       setDoor(prevDoor => ({
         ...prevDoor,
         door_lock_status: data.status,
@@ -191,8 +190,6 @@ const HomeScreen = () => {
     });
 
     socket.on('updateRoomStatus', data => {
-      console.log('Room Status...', data.status);
-
       setDoor(prevDoor => ({
         ...prevDoor,
         door_room_status: data.status,
@@ -200,8 +197,6 @@ const HomeScreen = () => {
     });
 
     socket.on('updateSupervisorCount', data => {
-      console.log('Supervisor Count...', data.count);
-
       setDoor(prevDoor => ({
         ...prevDoor,
         supervisorCount: data.count,
@@ -210,14 +205,11 @@ const HomeScreen = () => {
 
     // Clean up
     return () => {
-      // console.log('socket Disconnecting..');
       socket.disconnect();
     };
   }, []);
 
   useEffect(() => {
-    console.log('auto unlock updated.', autoUnlock);
-
     async function updateUserAutoUnlock() {
       const resp = await axios.patch('/users/update-auto-unlock', {
         id: user._id,
@@ -233,7 +225,6 @@ const HomeScreen = () => {
       setDeviceFound(false);
       ScanForBluetooth();
     } else {
-      console.log('stop scan called');
       manager.stopDeviceScan();
       // manager.destroy();
       // stopMonitoring();
@@ -244,14 +235,12 @@ const HomeScreen = () => {
   // bluetooth code handling
 
   async function requestBluetoothPermissions() {
-    console.log('checking for permission..');
     if (Platform.OS === 'android') {
       const granted = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       ]);
-      console.log('granted permissions for the app : ', granted);
 
       const allGranted = Object.values(granted).every(val => val === 'granted');
       CheckDeviceLocationAndBluetooth();
@@ -290,7 +279,6 @@ const HomeScreen = () => {
 
   const BlutoothInterval = () => {
     const interval = setInterval(() => {
-      console.log('interval running...');
       ScanForBluetooth();
     }, 5000);
   };
@@ -310,8 +298,8 @@ const HomeScreen = () => {
         await axios.post('/actions/add-action', {
           action_id: Actions.LOCK_DOOR,
         });
-        console.log('Door auto-locked after timeout');
       } catch (lockErr) {
+        // console.error('Auto-lock failed:', lockErr);
         console.error('Auto-lock failed:', lockErr);
       }
       // }, 1 * 60 * 1000); // 2 minutes
@@ -321,13 +309,10 @@ const HomeScreen = () => {
   const ScanForBluetooth = async () => {
     // setScanStatus('Scanning ...');
 
-    // console.log('Scanning Started...');
-
     const granted = await requestBluetoothPermissions();
     if (granted) {
       const locationBluetooth = await CheckDeviceLocationAndBluetooth();
       if (locationBluetooth) {
-        console.log('device scan start...');
         toast.show('device scan started');
         manager.startDeviceScan(null, null, (error, device) => {
           if (error) {
@@ -341,9 +326,7 @@ const HomeScreen = () => {
             device.rssi >= Door.UNLOCK_DISTANCE
           ) {
             // setScanStatus(device.name);
-            console.log('device found :', Door.DOOR_ID);
             toast.show('device found : ', device.name);
-            console.log(device);
             setDeviceFound(true);
             manager.stopDeviceScan();
 
@@ -356,7 +339,6 @@ const HomeScreen = () => {
     } else {
       toast.show('grant bluetooth and location permission to the app');
     }
-    // console.log('Finished Scanning...');
   };
 
   // const UnLockRequest = () => {

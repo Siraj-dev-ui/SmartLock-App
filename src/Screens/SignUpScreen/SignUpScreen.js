@@ -23,7 +23,6 @@ const SignUpScreen = () => {
   };
 
   const onPressRegister = async () => {
-    console.log('inside onpress');
     const data = {
       name: name,
       email: email,
@@ -42,8 +41,6 @@ const SignUpScreen = () => {
       return;
     }
 
-    console.log('data : ', data);
-
     const resp = await axios.post('/users/register-request', data);
 
     if (resp.data['userFound'] === true) {
@@ -60,7 +57,6 @@ const SignUpScreen = () => {
       setConfirmPassword('');
       toast.show('Your Request Has been sended.', {type: 'success'});
     }
-    console.log('register response : ', resp.data);
   };
   return (
     <View
