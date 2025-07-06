@@ -18,7 +18,7 @@ import DeviceInfo from 'react-native-device-info';
 import {Colors, DefaultColors} from '../../Utils/Theme';
 import {Card} from 'react-native-paper';
 import {axios} from '../../Utils/Axios';
-import {Actions, Door, RoomStatus} from '../../Utils/Constants';
+import {Actions, Door, Roles, RoomStatus} from '../../Utils/Constants';
 import {useToast} from 'react-native-toast-notifications';
 import moment from 'moment';
 import {useUser} from '../../Contexts/UserProvider';
@@ -48,6 +48,10 @@ const HomeScreen = () => {
   const [scanStatus, setScanStatus] = useState('IDLE');
 
   const onPressUnlock = async () => {
+    if (!door.is_lab_open && user.requested_role === Roles.USER) {
+      toast.show('The Lab is Closed.');
+      return;
+    }
     if (door?.door_lock_status) {
       await axios.post('/actions/add-action', {
         action_id: Actions.UNLOCK_DOOR,
@@ -284,6 +288,10 @@ const HomeScreen = () => {
   };
 
   const UnlockWithBluetooth = async () => {
+    if (!door.is_lab_open && user.requested_role === Roles.USER) {
+      toast.show('The Lab is Closed.');
+      return;
+    }
     await axios.post('/actions/add-action', {
       action_id: Actions.UNLOCK_DOOR,
     });
